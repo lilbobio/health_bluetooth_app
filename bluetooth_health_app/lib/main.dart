@@ -64,18 +64,11 @@ class _MyHomePageState extends State<MyHomePage> {
                     connectedString,
                   ),
                   FloatingActionButton(
-                    onPressed: () async {
-                        // ignore: await_only_futures, unrelated_type_equality_checks
-                        if(await blueTooth.connect == true){
-                          setState(() {
-                            connectedString = 'Bluetooth Device can be connected\n\n\n';
-                          });
-                        }else{
-                          setState(() {
-                            connectedString = 'Bluetooth is not enabled on device\n\n\n';
-                          });
-                        }
-                      },
+                    onPressed: () {
+                      setState(() {
+                        connectedString = blueTooth.scan();
+                      });
+                    },
                     heroTag: null,
                     child: const Icon(Icons.bluetooth),
                   ),
@@ -97,8 +90,7 @@ class ConnectedPage extends StatefulWidget {
   State<ConnectedPage> createState() => _ConnectedPageState();
 }
 
-class _ConnectedPageState extends State<ConnectedPage>{
-
+class _ConnectedPageState extends State<ConnectedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold();
@@ -106,28 +98,17 @@ class _ConnectedPageState extends State<ConnectedPage>{
 }
 
 class _BlueTooth {
-  Future<bool> checkIfBTIsEnabled() async {
-    if (await QuickBlue.isBluetoothAvailable()) {
-      print('device cannot connect');
-      return false;
-    } else {
-      print('device can connect');
-      return true;
-    }
-  }
+  String scan() {
+    String ret = '';
+    QuickBlue.scanResultStream.listen((result) {
+      print('onScanResult $result');
+      ret = 'onScanResult $result';
+    });
 
-  Future<bool> connect() async {
-    if (!await checkIfBTIsEnabled()) {
-      return false;
-    }
-    // QuickBlue.scanResultStream.listen((event) {
-    //     print('onScanResult $event');
-    // });
+    QuickBlue.startScan();
 
-    //QuickBlue.startScan();
+    QuickBlue.stopScan();
 
-    // QuickBlue.
-
-    return true;
+    return ret;
   }
 }
