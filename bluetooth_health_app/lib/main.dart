@@ -1,6 +1,6 @@
-// import 'package:flutter/foundation.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:quick_blue/quick_blue.dart';
+import 'package:flutter_blue/flutter_blue.dart';
 
 void main() {
   runApp(const MyApp());
@@ -34,8 +34,55 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String connectedString = 'Click to Connect to Bluetooth Device\n\n\n';
-  _BlueTooth blueTooth = _BlueTooth();
+  String connectedString = '\n\n\nClick to Connect to Bluetooth Device\n\n\n';
+  FlutterBlue flutterBlue = FlutterBlue.instance;
+
+  Future<bool> checkBluetooth() async {
+    if (await flutterBlue.isAvailable && await flutterBlue.isOn) {
+      return true;
+    }
+    return false;
+  }
+
+  void scan() {
+    setState(() {
+      connectedString = '\n\n\nScanning for Devices...\n\n\n';
+    });
+
+    String newConnectedString = '';
+    checkBluetooth().then((bool result) {
+      if (result) {
+        flutterBlue.startScan(timeout: const Duration(seconds: 4));
+        int numberOfDevices = 0;
+
+        var scanResult = flutterBlue.scanResults.listen((results) {
+          for (ScanResult r in results) {
+            if (r.device.name.compareTo("") != 0) {
+              numberOfDevices++;
+              newConnectedString =
+                  '$newConnectedString ${r.device.name} found! \n';
+            }
+
+            if (kDebugMode) {
+              print('${r.device.name} found! rssi: ${r.rssi}');
+            }
+          }
+        });
+
+        flutterBlue.stopScan();
+
+        Future.delayed(const Duration(seconds: 4), () {
+          newConnectedString = '\n\n\nfound $numberOfDevices bluetooth devices \n$newConnectedString\n\n\n';
+          setState(() {
+            connectedString = newConnectedString;
+          });
+          if (kDebugMode) {
+            print('newCSTring $newConnectedString');
+          }
+        });
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +113,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   FloatingActionButton(
                     onPressed: () {
                       setState(() {
-                        connectedString = blueTooth.scan();
+                        scan();
                       });
                     },
                     heroTag: null,
@@ -93,22 +140,6 @@ class ConnectedPage extends StatefulWidget {
 class _ConnectedPageState extends State<ConnectedPage> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
-  }
-}
-
-class _BlueTooth {
-  String scan() {
-    String ret = '';
-    QuickBlue.scanResultStream.listen((result) {
-      print('onScanResult $result');
-      ret = 'onScanResult $result';
-    });
-
-    QuickBlue.startScan();
-
-    QuickBlue.stopScan();
-
-    return ret;
+    return const Scaffold();
   }
 }
