@@ -39,28 +39,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
   }
 }
 
-// class ScanPage extends StatefulWidget {
-//   const ScanPage({super.key, required this.title});
-//   final String title;
-
-//   @override
-//   State<ScanPage> createState() => _ScanPageState();
-// }
-
-// class _ScanPageState extends State<ScanPage> {
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text(widget.title),
-//       ),
-//       body: SafeArea(
-//         child:
-//         ),
-//     );
-//   }
-// }
-
 class MyHomePage extends StatefulWidget {
   const MyHomePage({super.key, required this.title});
 
@@ -71,97 +49,155 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  int _widgetNum = 0;
   String connectedString = '\n\n\nClick to Connect to Bluetooth Device\n\n\n';
   Bluetooth bluetooth = Bluetooth();
 
   @override
   Widget build(BuildContext context) {
+    List<Widget> homePageWidgetsList = List.empty(growable: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: SafeArea(
-        child: Column(
-          children: <Widget>[
-            //MIE LOGO
-            Align(
-              alignment: Alignment.topCenter,
+        child: Column(children: [
+          Align(
+            alignment: Alignment.topCenter,
+            child: SizedBox(
               child: SizedBox(
-                //width: 130,
-                child: SizedBox(
-                  child: Image.asset('assets/images/logo.jpg'),
-                ),
+                child: Image.asset('assets/images/logo.jpg'),
               ),
             ),
-
-            //Text and Bluetooth Button
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    connectedString,
-                  ),
-                  FloatingActionButton(
-                    onPressed: () {
-                      setState(() {
-                        connectedString = '\n\n\nScanning for Devices...\n\n\n';
-                        bluetooth.scan();
-                        Future.delayed(const Duration(seconds: 4), () {
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Text(
+                  connectedString,
+                ),
+              ],
+            ),
+          ),
+          Align(
+            alignment: Alignment.center,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      homePageWidgetsList.clear();
+                      List<BluetoothDevice> bleList = [];
+                      connectedString = '\n\n\nScanning for Devices...\n\n\n';
+                      bluetooth.scan();
+                      Future.delayed(
+                        const Duration(seconds: 4),
+                        () {
                           setState(() {
                             connectedString = '';
-                            int realDevicesNum = 1;
+                            int realDeviceNum = 0;
                             for (int i = 0;
                                 i < bluetooth.scanResultList.length;
                                 i++) {
-                              String deviceName = bluetooth.scanResultList
-                                  .elementAt(i)
-                                  .device
-                                  .name;
-
+                              BluetoothDevice bluetoothDevice =
+                                  bluetooth.scanResultList.elementAt(i).device;
+                              String deviceName = bluetoothDevice.name;
                               if (deviceName.compareTo("") != 0) {
+                                realDeviceNum++;
                                 connectedString =
-                                    '$connectedString $realDevicesNum: $deviceName\n';
-                                realDevicesNum++;
-                              }
-                            }
+                                    '$connectedString $realDeviceNum: $deviceName\n';
+                                bleList.add(bluetoothDevice);
+                              } //if statement
+                            } //for loop
                             connectedString =
-                                '\n\n\nFound ${realDevicesNum - 1} Bluetooth Devices\n$connectedString\n\n\n';
-                          });
-                        });
-                      });
-                    },
+                                '\n\n\nFound $realDeviceNum Bluetooth Devices\n$connectedString\n\n\n';
 
-                    //bluetooth button
-                    heroTag: null,
-                    child: const Icon(Icons.bluetooth),
+                            for (int i = 0; i < bleList.length; i++) {
+                              setState(() {
+                                homePageWidgetsList.add(
+                                    afterScanButtonRow(bleList.elementAt(i)));
+                              });
+                              if (kDebugMode) {
+                                print("added ${bleList.elementAt(i)}");
+                                print(
+                                    'home page widget list${homePageWidgetsList.toString()}');
+                              } //if statement
+                            } //for loop
+                          }); //setState
+                        }, //Duration
+                      );
+                    }); //setState
+                  }, //onPressed
+                  heroTag: null,
+                  child: const Icon(Icons.bluetooth),
+                ),
+                Container(
+                  height: 200.0,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: homePageWidgetsList,
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
-          ],
-        ),
+          )
+        ]),
       ),
     );
   }
 
-  Container afterScanButtonContainer(BluetoothDevice device, Bluetooth bluetooth){
-    return Container(
-      child: Row(
+  void _addNewButton() {
+    setState(() {
+      _widgetNum++;
+    });
+  }
+
+  Widget afterScanButtonRow(BluetoothDevice device) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
+      children: [
+        FloatingActionButton(
+            onPressed: () {
+              bluetooth.connect(device);
+            },
+            child: Text(device.name)),
+      ],
+    );
+  }
+}
+
+class AfterScanButtonRow extends StatefulWidget {
+  const AfterScanButtonRow({super.key, required this.devices, required this.bluetooth});
+  final List<BluetoothDevice> devices;
+  final Bluetooth bluetooth;
+
+  @override
+  State<StatefulWidget> createState() => _AfterScanButtonRowState();
+}
+
+class _AfterScanButtonRowState extends State<AfterScanButtonRow> {
+  @override
+  Widget build(BuildContext context) {
+    return Align(
+      alignment: Alignment.center,
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          TextButton(onPressed: setState(() {
-            bluetooth.connect(device);
-          }),
-          child: 
-          Text(device.name)
-          )
-        ]
+          FloatingActionButton(onPressed: () {}, child: Text(device.name)),
+        ],
       ),
     );
   }
+
+String onPressedConnect(Bluetooth bluetooth, BluetoothDevice device) {
+  bluetooth.connect(device);
+  return device.name;
+}
 }
 
 class Bluetooth {
@@ -190,14 +226,14 @@ class Bluetooth {
   }
 
   void connect(BluetoothDevice device) {
-    device.connect().then((value){
+    device.connect().then((value) {
       if (kDebugMode) {
         print("$device is connected");
       }
     });
   }
 
-  void disconnect(BluetoothDevice device){
+  void disconnect(BluetoothDevice device) {
     device.disconnect();
   }
 }
