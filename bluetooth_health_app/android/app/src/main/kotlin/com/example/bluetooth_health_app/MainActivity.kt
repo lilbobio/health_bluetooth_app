@@ -1,4 +1,4 @@
-package com.example.bluetooth_healt_app
+package com.example.bluetooth_health_app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -161,14 +161,18 @@ class _AfterScanPage extends State<AfterScanPage> {
     List<Widget> buttonWidgets = List.generate(
       _buttonCount,
       ((int i) => ButtonRow(
-          device: widget.devices.elementAt(0), bluetooth: widget.bluetooth,)),
+            device: widget.devices.elementAt(0),
+            bluetooth: widget.bluetooth,
+          )),
     );
 
     for (int i = 1; i < widget.devices.length; i++) {
       _buttonCount++;
       setState(() {
         buttonWidgets.add(ButtonRow(
-            device: widget.devices.elementAt(i), bluetooth: widget.bluetooth,));
+          device: widget.devices.elementAt(i),
+          bluetooth: widget.bluetooth,
+        ));
       });
     }
 
@@ -192,9 +196,7 @@ class _AfterScanPage extends State<AfterScanPage> {
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                child: SizedBox(
-                  child: Text(infoString),
-                ),
+                child: Text(infoString),
               ),
             ),
             Align(
@@ -248,11 +250,8 @@ class _ButtonRow extends State<ButtonRow> {
 
   scanButtonPressed(BluetoothDevice device) {
     setState(() {
-    //  widget.infoString = 'Connecting to Device';
       _isDisable = true;
     });
-
-
 
     widget.bluetooth.connect(device);
 
@@ -278,7 +277,7 @@ class Bluetooth {
       if (result) {
         flutterBlue.startScan(timeout: const Duration(seconds: 4));
 
-        var scanResult = flutterBlue.scanResults.listen((results) {
+        flutterBlue.scanResults.listen((results) {
           scanResultList = results;
         });
 
