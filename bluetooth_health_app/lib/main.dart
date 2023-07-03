@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -156,6 +158,12 @@ class _AfterScanPage extends State<AfterScanPage> {
   int _buttonCount = 1;
   String infoString = '\n\n\nClick on the Device You Want to Connect to\n\n\n';
 
+  changeInfoString(String str) {
+    setState(() {
+      infoString = str;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     List<Widget> buttonWidgets = List.generate(
@@ -163,6 +171,7 @@ class _AfterScanPage extends State<AfterScanPage> {
       ((int i) => ButtonRow(
             device: widget.devices.elementAt(0),
             bluetooth: widget.bluetooth,
+            infoString: changeInfoString,
           )),
     );
 
@@ -172,6 +181,7 @@ class _AfterScanPage extends State<AfterScanPage> {
         buttonWidgets.add(ButtonRow(
           device: widget.devices.elementAt(i),
           bluetooth: widget.bluetooth,
+          infoString: changeInfoString,
         ));
       });
     }
@@ -214,9 +224,15 @@ class _AfterScanPage extends State<AfterScanPage> {
 }
 
 class ButtonRow extends StatefulWidget {
-  const ButtonRow({super.key, required this.device, required this.bluetooth});
+  const ButtonRow(
+      {super.key,
+      required this.device,
+      required this.bluetooth,
+      required this.infoString});
   final BluetoothDevice device;
   final Bluetooth bluetooth;
+  final Function(String str) infoString;
+
   @override
   State<StatefulWidget> createState() => _ButtonRow();
 }
@@ -253,10 +269,16 @@ class _ButtonRow extends State<ButtonRow> {
       _isDisable = true;
     });
 
-    widget.bluetooth.connect(device);
+    widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
 
-    setState(() {
-      _isDisable = false;
+    widget.bluetooth.connect(device).then((value) {
+      if (kDebugMode) {
+        print('{device.name} is connected');
+      }
+      widget.infoString('\n\n\nConnected to ${device.name}.\n\n\n');
+      setState(() {
+        _isDisable = false;
+      });
     });
   }
 }
@@ -286,12 +308,8 @@ class Bluetooth {
     });
   }
 
-  void connect(BluetoothDevice device) {
-    device.connect().then((value) {
-      if (kDebugMode) {
-        print("$device is connected");
-      }
-    });
+  Future<void> connect(BluetoothDevice device) async {
+    await device.connect();
   }
 
   void disconnect(BluetoothDevice device) {
