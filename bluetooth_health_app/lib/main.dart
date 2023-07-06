@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'MIE Scale App',
       theme: ThemeData(
+          fontFamily: 'NexaText',
           brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green.shade700)),
       home: const MyHomePage(
@@ -51,7 +52,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  String connectedString = '\n\n\nClick to Connect to Bluetooth Device\n\n\n';
+  String connectedString = '\n\n\nClick to Connect to Bluetooth Device\n\n';
   Bluetooth bluetooth = Bluetooth();
 
   @override
@@ -78,6 +79,10 @@ class _MyHomePageState extends State<MyHomePage> {
               children: <Widget>[
                 Text(
                   connectedString,
+                  style: const TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.w700,
+                  ),
                 ),
               ],
             ),
@@ -92,7 +97,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     setState(() {
                       homePageWidgetsList.clear();
                       List<BluetoothDevice> bleList = [];
-                      connectedString = '\n\n\nScanning for Devices...\n\n\n';
+                      connectedString = '\n\n\nScanning for Devices...\n\n';
                       bluetooth.scan();
                       Future.delayed(
                         const Duration(seconds: 4),
@@ -110,10 +115,10 @@ class _MyHomePageState extends State<MyHomePage> {
                             } //for loop
                             if (bleList.isEmpty) {
                               connectedString =
-                                  '\n\n\n0 Devices Found\nScan Again\n\n\n';
+                                  '\n\n\n0 Devices Found\nScan Again\n\n';
                             } else {
                               connectedString =
-                                  '\n\n\nClick to Connect to Bluetooth Device\n\n\n';
+                                  '\n\n\nClick to Connect to Bluetooth Device\n\n';
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -155,8 +160,8 @@ class AfterScanPage extends StatefulWidget {
 }
 
 class _AfterScanPage extends State<AfterScanPage> {
+  String infoString = '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
   int _buttonCount = 1;
-  String infoString = '\n\n\nClick on the Device You Want to Connect to\n\n\n';
 
   changeInfoString(String str) {
     setState(() {
@@ -166,30 +171,48 @@ class _AfterScanPage extends State<AfterScanPage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> buttonWidgets = List.generate(
+    int buttonCount = widget.devices.length;
+
+    List<Widget> buttonWidgets2 = List.generate(
       _buttonCount,
-      ((int i) => ButtonRow(
-            device: widget.devices.elementAt(0),
-            bluetooth: widget.bluetooth,
-            infoString: changeInfoString,
-          )),
+      (int i) => ButtonRow(
+          device: widget.devices.elementAt(0),
+          bluetooth: widget.bluetooth,
+          infoString: changeInfoString),
+    );
+
+    List<Widget> buttonWidgets = List.filled(
+      buttonCount,
+      ButtonRow(
+        bluetooth: widget.bluetooth,
+        device: widget.devices.elementAt(0),
+        infoString: changeInfoString,
+      ),
     );
 
     for (int i = 1; i < widget.devices.length; i++) {
       _buttonCount++;
       setState(() {
-        buttonWidgets.add(ButtonRow(
-          device: widget.devices.elementAt(i),
-          bluetooth: widget.bluetooth,
-          infoString: changeInfoString,
-        ));
+        buttonWidgets2.add(ButtonRow(
+            device: widget.devices.elementAt(i),
+            bluetooth: widget.bluetooth,
+            infoString: changeInfoString));
       });
     }
 
-    if (kDebugMode) {
-      print(widget.bluetooth);
-      print(widget.devices);
+    for (int i = 0; i < widget.devices.length; i++) {
+      if (kDebugMode) {
+        print('device $i: ${widget.devices[i]}');
+      }
+      setState(() {
+        buttonWidgets[i] = ButtonRow(
+          bluetooth: widget.bluetooth,
+          device: widget.devices.elementAt(i),
+          infoString: changeInfoString,
+        );
+      });
     }
+
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
@@ -206,7 +229,13 @@ class _AfterScanPage extends State<AfterScanPage> {
             Align(
               alignment: Alignment.center,
               child: SizedBox(
-                child: Text(infoString),
+                child: Text(
+                  infoString,
+                  style: const TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
               ),
             ),
             Align(
@@ -257,7 +286,12 @@ class _ButtonRow extends State<ButtonRow> {
                 scanButtonPressed(widget.device);
               });
             },
-            child: Text(widget.device.name),
+            child: Text(
+              widget.device.name,
+              style: const TextStyle(
+                fontSize: 18.0,
+              ),
+            ),
           )
         ],
       ),
