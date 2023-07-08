@@ -78,7 +78,7 @@ class _HomePageState extends State<HomePage> {
                             } //for loop
                             if (bleList.isEmpty) {
                               connectedString =
-                                  '\n\n\n0 Devices Found\nScan Again\n\n';
+                                  '\n\n\n0 Devices Found\n    Scan Again\n\n';
                             } else {
                               connectedString =
                                   '\n\n\nClick to Connect to Bluetooth Device\n\n';

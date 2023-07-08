@@ -1,4 +1,4 @@
-
+import 'package:bluetooth_health_app/connected_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
@@ -165,11 +165,17 @@ class _ButtonRow extends State<ButtonRow> {
 
     widget.bluetooth.connect(device).then((value) {
       if (kDebugMode) {
-        print('{device.name} is connected');
+        print('${device.name} is connected');
       }
       widget.infoString('\n\n\nConnected to ${device.name}.\n\n\n');
       setState(() {
         _isDisable = false;
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: ((context) => ConnectedPage(
+                 bluetooth: widget.bluetooth, title: device.name, device: device,)),
+            ));
       });
     });
   }
