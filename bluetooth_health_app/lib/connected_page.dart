@@ -1,7 +1,9 @@
+import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'bluetooth.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ConnectedPage extends StatefulWidget {
   const ConnectedPage(
@@ -20,7 +22,20 @@ class ConnectedPage extends StatefulWidget {
 
 class _ConnectedPageState extends State<ConnectedPage> {
   bool _isDisable = false;
-  String services = 'Finding Services\n\n';
+  String services = '\n\nFinding Services...\n\n\n';
+  late Timer everySecond;
+
+  // @override
+  // void initState() {
+  //   super.initState();
+
+  //   everySecond = Timer.periodic(const Duration(seconds: 1), (Timer t) {
+  //     setState(() {
+  //       findServices(widget.device, widget.bluetooth);
+  //       //services = '';
+  //     });
+  //   });
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -52,22 +67,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
               child: Text(services),
             ),
 
+            //find service button
             Align(
               alignment: Alignment.center,
               child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  textStyle: const TextStyle(fontSize: 20),
-                ),
-                onPressed: () {
-                  findServices(widget.device, widget.bluetooth);
-                },
-                child: const Text(
-                  'Find services of the device',
-                  style: TextStyle(
-                    fontSize: 18.0,
-                  ),
-                ),
-              ),
+                  onPressed: () {
+                    setState(() {
+                      findServices(widget.device, widget.bluetooth);
+                    });
+                  },
+                  child: const Text('Find Services')),
             ),
 
             //disconnect button
@@ -81,7 +90,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                     return;
                   }
                   setState(() {
-                    (disconnect(widget.device, widget.bluetooth));
+                    disconnect(widget.device, widget.bluetooth);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   });
@@ -115,7 +124,13 @@ class _ConnectedPageState extends State<ConnectedPage> {
       for (var service in services) {
         if (kDebugMode) {
           print('service: $service\n');
-          //  service.includedServices;
+          //service.characteristics.elementAt(0);
+          //print('service: ${service.toString()}');
+          bluetooth.findCharacteristics(service);
+          List<BluetoothService> includedServices = service.includedServices;
+          for (var includedService in includedServices) {
+            print('included Service: $includedService');
+          }
           // print();
         }
       }

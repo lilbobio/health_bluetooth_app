@@ -1,9 +1,10 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'package:bluetooth_health_app/device_page.dart';
 import 'bluetooth.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+
+//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -78,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                             } //for loop
                             if (bleList.isEmpty) {
                               connectedString =
-                                  '\n\n\n0 Devices Found\n    Scan Again\n\n';
+                                  '\n\n\n0 Devices Found\n       Scan Again\n\n';
                             } else {
                               connectedString =
                                   '\n\n\nClick to Connect to Bluetooth Device\n\n';

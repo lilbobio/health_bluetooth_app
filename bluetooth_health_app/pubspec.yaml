@@ -41,6 +41,7 @@ dependencies:
   rxdart: 
   stream_channel: 
   test_api: 
+  flutter_blue_plus: ^1.5.2
 
 
 dev_dependencies:

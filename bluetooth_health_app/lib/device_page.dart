@@ -1,8 +1,10 @@
 import 'package:bluetooth_health_app/connected_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_blue/flutter_blue.dart';
 import 'bluetooth.dart';
+import 'package:flutter_blue/flutter_blue.dart';
+
+//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class AfterScanPage extends StatefulWidget {
   const AfterScanPage(
@@ -167,7 +169,7 @@ class _ButtonRow extends State<ButtonRow> {
       if (kDebugMode) {
         print('${device.name} is connected');
       }
-      widget.infoString('\n\n\nConnected to ${device.name}.\n\n\n');
+     // widget.infoString('\n\n\nConnected to ${device.name}.\n\n\n');
       setState(() {
         _isDisable = false;
         Navigator.push(

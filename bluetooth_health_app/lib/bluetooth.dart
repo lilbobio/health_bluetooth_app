@@ -1,5 +1,8 @@
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+
+//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class Bluetooth {
   FlutterBlue flutterBlue = FlutterBlue.instance;
@@ -43,6 +46,19 @@ class Bluetooth {
   Future<List<BluetoothService>> findServices(BluetoothDevice device) async {
     List<BluetoothService> services = await device.discoverServices();
     return services;
+  }
+
+  findCharacteristics(BluetoothService service) async {
+    var characteristics = service.characteristics;
+    for(BluetoothCharacteristic c in characteristics){
+     // List<int> value = await c.read();
+      if (kDebugMode) {
+        //print('c.read of $service: $value');
+        print('descriptors of $service: ${c.descriptors}');
+        print('properties of $service: ${c.properties}');
+        print('');
+      }
+    }
   }
 
 }
