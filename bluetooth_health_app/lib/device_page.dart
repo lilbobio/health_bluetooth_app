@@ -5,10 +5,8 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
-
-class AfterScanPage extends StatefulWidget {
-  const AfterScanPage(
+class DevicePage extends StatefulWidget {
+  const DevicePage(
       {super.key,
       required this.devices,
       required this.bluetooth,
@@ -18,10 +16,10 @@ class AfterScanPage extends StatefulWidget {
   final String title;
 
   @override
-  State<StatefulWidget> createState() => _AfterScanPage();
+  State<StatefulWidget> createState() => _DevicePage();
 }
 
-class _AfterScanPage extends State<AfterScanPage> {
+class _DevicePage extends State<DevicePage> {
   String infoString =
       '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
   int _buttonCount = 1;
@@ -81,12 +79,14 @@ class _AfterScanPage extends State<AfterScanPage> {
       body: SafeArea(
         child: Column(
           children: [
+            //logo
             Align(
               alignment: Alignment.center,
               child: SizedBox(
                 child: Image.asset('assets/images/logo.jpg'),
               ),
             ),
+            //info text
             Align(
               alignment: Alignment.center,
               child: SizedBox(
@@ -99,6 +99,7 @@ class _AfterScanPage extends State<AfterScanPage> {
                 ),
               ),
             ),
+            //buttons
             Align(
               alignment: Alignment.center,
               child: Column(
@@ -144,9 +145,7 @@ class _ButtonRow extends State<ButtonRow> {
                 return;
               }
               setState(() {
-                context.loaderOverlay.show();
                 scanButtonPressed(widget.device);
-                context.loaderOverlay.hide();
               });
             },
             child: Text(
@@ -166,21 +165,18 @@ class _ButtonRow extends State<ButtonRow> {
       if (kDebugMode) {
         print('in first scanButton\n');
       }
-      context.loaderOverlay.show();
-      _isDisable = true;
     });
 
     widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
-
+    context.loaderOverlay.show();
+    if (kDebugMode) {
+      print('is visible: ${context.loaderOverlay.visible}\n');
+    }
     widget.bluetooth.connect(device).then((value) {
       if (kDebugMode) {
         print('${device.name} is connected\n');
       }
       setState(() {
-        _isDisable = false;
-        if (kDebugMode) {
-          print('hide load wheel\n');
-        }
         context.loaderOverlay.hide();
         Navigator.push(
             context,

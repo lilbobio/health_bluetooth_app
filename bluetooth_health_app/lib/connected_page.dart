@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
-//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class ConnectedPage extends StatefulWidget {
   const ConnectedPage(
@@ -24,6 +23,12 @@ class _ConnectedPageState extends State<ConnectedPage> {
   bool _isDisable = false;
   String services = '\n\nFinding Services...\n\n\n';
   late Timer everySecond;
+
+  @override
+  void initState() {
+    findServices(widget.device, widget.bluetooth, services);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,18 +60,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
               child: Text(services),
             ),
 
-            //find service button
-            Align(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                  onPressed: () {
-                    setState(() {
-                      findServices(widget.device, widget.bluetooth);
-                    });
-                  },
-                  child: const Text('Find Services')),
-            ),
-
             //disconnect button
             Align(
               alignment: Alignment.center,
@@ -78,7 +71,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                     return;
                   }
                   setState(() {
-                    disconnect(widget.device, widget.bluetooth);
+                    widget.bluetooth.disconnect(widget.device);
                     Navigator.pop(context);
                     Navigator.pop(context);
                   });
@@ -97,24 +90,30 @@ class _ConnectedPageState extends State<ConnectedPage> {
     );
   }
 
-  disconnect(BluetoothDevice device, Bluetooth bluetooth) {
-    setState(() {
-      _isDisable = true;
-    });
-    bluetooth.disconnect(device);
-    setState(() {
-      _isDisable = false;
-    });
-  }
-
-  findServices(BluetoothDevice device, Bluetooth bluetooth) {
-    bluetooth.findServices(device).then((services) {
+  findServices(BluetoothDevice device, Bluetooth bluetooth, String info) {
+    bluetooth.findServices(device).then((services) async {
       for (var service in services) {
         String uuid = service.uuid.toString();
         uuid = uuid.substring(4, 8);
         if (uuid.compareTo(bluetooth.heartRateMonitorUUID) == 0) {
           if (kDebugMode) {
             print('connected to a heart monitor');
+            print('service: $service');
+            print(
+                'number of characteristics: ${service.characteristics.length}');
+            int i = 1;
+            for (var c in service.characteristics) {
+              if (c.properties.notify) {
+                await c.setNotifyValue(true);
+                c.value.listen((value) {
+                  if (kDebugMode) {
+                    print('value: $value');
+                  }
+                });
+                print('characteristic $i: $c');
+                i++;
+              }
+            }
           }
         } else if (uuid.compareTo(bluetooth.scaleUUID) == 0) {
           if (kDebugMode) {

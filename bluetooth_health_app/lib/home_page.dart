@@ -5,7 +5,6 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-//import 'package:flutter_blue_plus/flutter_blue_plus.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
@@ -17,7 +16,7 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String connectedString = '\n\n\nClick to Connect to Bluetooth Device\n\n';
+  String connectedString = '\n\n\nClick to Scan for Bluetooth Devices\n\n';
   Bluetooth bluetooth = Bluetooth();
 
   @override
@@ -93,7 +92,7 @@ class _HomePageState extends State<HomePage> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: ((context) => AfterScanPage(
+                                    builder: ((context) => DevicePage(
                                         devices: bleList,
                                         bluetooth: bluetooth,
                                         title: widget.title)),
