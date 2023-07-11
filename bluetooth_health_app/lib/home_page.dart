@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:bluetooth_health_app/device_page.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
@@ -28,6 +29,7 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: Column(children: [
+          //logo
           Align(
             alignment: Alignment.topCenter,
             child: SizedBox(
@@ -36,6 +38,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+          //info text
           Align(
             alignment: Alignment.center,
             child: Column(
@@ -51,6 +54,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+          //bluetooth button
           Align(
             alignment: Alignment.center,
             child: Column(
@@ -58,7 +62,9 @@ class _HomePageState extends State<HomePage> {
               children: <Widget>[
                 FloatingActionButton(
                   onPressed: () {
+                    //scans for devices
                     setState(() {
+                      context.loaderOverlay.show();
                       homePageWidgetsList.clear();
                       List<BluetoothDevice> bleList = [];
                       connectedString = '\n\n\nScanning for Devices...\n\n';
@@ -77,6 +83,7 @@ class _HomePageState extends State<HomePage> {
                                 bleList.add(bluetoothDevice);
                               } //if statement
                             } //for loop
+                            context.loaderOverlay.hide();
                             if (bleList.isEmpty) {
                               connectedString =
                                   '\n\n\n0 Devices Found\n       Scan Again\n\n';

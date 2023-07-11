@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'home_page.dart';
 
 void main() {
@@ -16,8 +17,8 @@ class BLEApp extends StatelessWidget {
           fontFamily: 'NexaText',
           brightness: Brightness.light,
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green.shade700)),
-      home: const HomePage(
-        title: 'MIE Bluetooth Scale App',
+      home: const LoaderOverlay( 
+        child: HomePage(title: 'MIE Bluetooth Scale App'),
       ),
     );
   }

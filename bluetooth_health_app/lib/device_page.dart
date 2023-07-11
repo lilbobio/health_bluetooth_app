@@ -1,6 +1,7 @@
 import 'package:bluetooth_health_app/connected_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
@@ -143,7 +144,9 @@ class _ButtonRow extends State<ButtonRow> {
                 return;
               }
               setState(() {
+                context.loaderOverlay.show();
                 scanButtonPressed(widget.device);
+                context.loaderOverlay.hide();
               });
             },
             child: Text(
@@ -160,6 +163,10 @@ class _ButtonRow extends State<ButtonRow> {
 
   scanButtonPressed(BluetoothDevice device) {
     setState(() {
+      if (kDebugMode) {
+        print('in first scanButton\n');
+      }
+      context.loaderOverlay.show();
       _isDisable = true;
     });
 
@@ -167,16 +174,22 @@ class _ButtonRow extends State<ButtonRow> {
 
     widget.bluetooth.connect(device).then((value) {
       if (kDebugMode) {
-        print('${device.name} is connected');
+        print('${device.name} is connected\n');
       }
-     // widget.infoString('\n\n\nConnected to ${device.name}.\n\n\n');
       setState(() {
         _isDisable = false;
+        if (kDebugMode) {
+          print('hide load wheel\n');
+        }
+        context.loaderOverlay.hide();
         Navigator.push(
             context,
             MaterialPageRoute(
               builder: ((context) => ConnectedPage(
-                 bluetooth: widget.bluetooth, title: device.name, device: device,)),
+                    bluetooth: widget.bluetooth,
+                    title: device.name,
+                    device: device,
+                  )),
             ));
       });
     });

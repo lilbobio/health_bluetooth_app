@@ -25,18 +25,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
   String services = '\n\nFinding Services...\n\n\n';
   late Timer everySecond;
 
-  // @override
-  // void initState() {
-  //   super.initState();
-
-  //   everySecond = Timer.periodic(const Duration(seconds: 1), (Timer t) {
-  //     setState(() {
-  //       findServices(widget.device, widget.bluetooth);
-  //       //services = '';
-  //     });
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -122,16 +110,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
   findServices(BluetoothDevice device, Bluetooth bluetooth) {
     bluetooth.findServices(device).then((services) {
       for (var service in services) {
-        if (kDebugMode) {
-          print('service: $service\n');
-          //service.characteristics.elementAt(0);
-          //print('service: ${service.toString()}');
-          bluetooth.findCharacteristics(service);
-          List<BluetoothService> includedServices = service.includedServices;
-          for (var includedService in includedServices) {
-            print('included Service: $includedService');
+        String uuid = service.uuid.toString();
+        uuid = uuid.substring(4, 8);
+        if (uuid.compareTo(bluetooth.heartRateMonitorUUID) == 0) {
+          if (kDebugMode) {
+            print('connected to a heart monitor');
           }
-          // print();
+        } else if (uuid.compareTo(bluetooth.scaleUUID) == 0) {
+          if (kDebugMode) {
+            print('connected to a scale');
+          }
         }
       }
     });
