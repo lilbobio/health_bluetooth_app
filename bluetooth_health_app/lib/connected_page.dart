@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'bluetooth.dart';
@@ -20,7 +21,6 @@ class ConnectedPage extends StatefulWidget {
 }
 
 class _ConnectedPageState extends State<ConnectedPage> {
-  bool _isDisable = false;
   String services = '\n\nFinding Services...\n\n\n';
   late Timer everySecond;
 
@@ -67,9 +67,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 style: ElevatedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)),
                 onPressed: () {
-                  if (_isDisable == true) {
-                    return;
-                  }
                   setState(() {
                     widget.bluetooth.disconnect(widget.device);
                     Navigator.pop(context);
@@ -92,7 +89,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
   findServices(BluetoothDevice device, Bluetooth bluetooth, String info) {
     bluetooth.findServices(device).then((services) async {
-      for (var service in services) {
+      for (BluetoothService service in services) {
         String uuid = service.uuid.toString();
         uuid = uuid.substring(4, 8);
         if (uuid.compareTo(bluetooth.heartRateMonitorUUID) == 0) {
@@ -101,17 +98,15 @@ class _ConnectedPageState extends State<ConnectedPage> {
             print('service: $service');
             print(
                 'number of characteristics: ${service.characteristics.length}');
-            int i = 1;
-            for (var c in service.characteristics) {
+            for (BluetoothCharacteristic c in service.characteristics) {
               if (c.properties.notify) {
                 await c.setNotifyValue(true);
-                c.value.listen((value) {
+                c.value.listen((values) async {
                   if (kDebugMode) {
-                    print('value: $value');
+                    print('values: $values');
+                    print('Heart Rate: ${findHeartRate(values).toInt()}');
                   }
                 });
-                print('characteristic $i: $c');
-                i++;
               }
             }
           }
@@ -122,5 +117,28 @@ class _ConnectedPageState extends State<ConnectedPage> {
         }
       }
     });
+  }
+
+  //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble 
+  int findHeartRate(List<int> values){
+    if(values.isEmpty){
+      return 0;
+    }
+
+    int flags = values[0];
+    String flagStr = flags.toRadixString(2);
+    List<String> flagsArray = flagStr.split("");
+
+    //find if the heart rate is U8 or U16 from the flag
+    if(flagsArray[0] == "0" || flagsArray.length <= 3){
+      //U8
+      return values[1];
+    } else {
+      //U16
+      ByteBuffer buffer = Uint8List.fromList(values.sublist(1,3)).buffer;
+      ByteData heartRateBuffer = ByteData.view(buffer);
+      int heartRate = heartRateBuffer.getUint16(0, Endian.little);
+      return heartRate;
+    }
   }
 }

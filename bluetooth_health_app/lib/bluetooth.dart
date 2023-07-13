@@ -3,9 +3,9 @@ import 'package:flutter_blue/flutter_blue.dart';
 
 class Bluetooth {
   FlutterBlue flutterBlue = FlutterBlue.instance;
-  var scanResultList = <ScanResult>[];
+  List<ScanResult> scanResultList = <ScanResult>[];
   final String heartRateMonitorUUID = '180d';
-  final String scaleUUID = '181D'; 
+  final String scaleUUID = '181D';
 
   Future<bool> checkBluetooth() async {
     if (await flutterBlue.isAvailable && await flutterBlue.isOn) {

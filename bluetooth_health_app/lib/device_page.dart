@@ -129,8 +129,6 @@ class ButtonRow extends StatefulWidget {
 }
 
 class _ButtonRow extends State<ButtonRow> {
-  bool _isDisable = false;
-
   @override
   Widget build(BuildContext context) {
     return SizedBox(
@@ -141,9 +139,6 @@ class _ButtonRow extends State<ButtonRow> {
             style: ElevatedButton.styleFrom(
                 textStyle: const TextStyle(fontSize: 20)),
             onPressed: () {
-              if (_isDisable == true) {
-                return;
-              }
               setState(() {
                 scanButtonPressed(widget.device);
               });

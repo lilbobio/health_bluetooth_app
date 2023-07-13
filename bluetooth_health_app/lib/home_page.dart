@@ -5,7 +5,6 @@ import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
 
-
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.title});
 
@@ -37,6 +36,7 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
           ),
+
           //info text
           Align(
             alignment: Alignment.center,
@@ -53,6 +53,7 @@ class _HomePageState extends State<HomePage> {
               ],
             ),
           ),
+
           //bluetooth button
           Align(
             alignment: Alignment.center,
