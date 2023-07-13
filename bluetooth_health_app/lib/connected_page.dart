@@ -21,12 +21,17 @@ class ConnectedPage extends StatefulWidget {
 }
 
 class _ConnectedPageState extends State<ConnectedPage> {
-  String services = '\n\nFinding Services...\n\n\n';
+  String servicesText = '\n\nFinding Services...\n\n\n';
   late Timer everySecond;
+  changeInfoString(String str) {
+    setState(() {
+      servicesText = str;
+    });
+  }
 
   @override
   void initState() {
-    findServices(widget.device, widget.bluetooth, services);
+    findServices(widget.device, widget.bluetooth, changeInfoString);
     super.initState();
   }
 
@@ -57,12 +62,17 @@ class _ConnectedPageState extends State<ConnectedPage> {
             //find services text
             Align(
               alignment: Alignment.center,
-              child: Text(services),
+              child: Text(
+                servicesText,
+                style:
+                    const TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                textAlign: TextAlign.center,
+              ),
             ),
 
             //disconnect button
             Align(
-              alignment: Alignment.center,
+              alignment: Alignment.bottomCenter,
               child: ElevatedButton(
                 style: ElevatedButton.styleFrom(
                     textStyle: const TextStyle(fontSize: 20)),
@@ -87,7 +97,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
     );
   }
 
-  findServices(BluetoothDevice device, Bluetooth bluetooth, String info) {
+  findServices(
+      BluetoothDevice device, Bluetooth bluetooth, Function(String str) info) {
     bluetooth.findServices(device).then((services) async {
       for (BluetoothService service in services) {
         String uuid = service.uuid.toString();
@@ -95,47 +106,76 @@ class _ConnectedPageState extends State<ConnectedPage> {
         if (uuid.compareTo(bluetooth.heartRateMonitorUUID) == 0) {
           if (kDebugMode) {
             print('connected to a heart monitor');
-            print('service: $service');
-            print(
-                'number of characteristics: ${service.characteristics.length}');
-            for (BluetoothCharacteristic c in service.characteristics) {
-              if (c.properties.notify) {
-                await c.setNotifyValue(true);
-                c.value.listen((values) async {
-                  if (kDebugMode) {
-                    print('values: $values');
-                    print('Heart Rate: ${findHeartRate(values).toInt()}');
-                  }
-                });
-              }
-            }
           }
+          heartRateMonitor(service, info);
         } else if (uuid.compareTo(bluetooth.scaleUUID) == 0) {
           if (kDebugMode) {
             print('connected to a scale');
           }
+          scale(service, info);
         }
       }
     });
   }
 
-  //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble 
-  int findHeartRate(List<int> values){
-    if(values.isEmpty){
+  heartRateMonitor(BluetoothService service, Function(String str) info) async {
+    for (BluetoothCharacteristic c in service.characteristics) {
+      if (c.properties.notify) {
+        await c.setNotifyValue(true);
+        c.value.listen((values) async {
+          setState(() {
+            info('Heart Rate is:\n\n ${findHeartRate(values)}\n\n\n\n\n');
+          });
+        });
+      }
+    }
+  }
+
+  scale(BluetoothService service, Function(String str) info) async {
+    for(BluetoothCharacteristic c in service.characteristics){
+      if(c.properties.notify) {
+        await c.setNotifyValue(true);
+        c.value.listen((values) {
+          setState(() {
+            info('Weight is:\n\n ${findWeight(values)}\n\n\n\n');
+          });
+        });
+      }
+    }
+  }
+
+  int findWeight(List<int> values){
+    if(values.isEmpty) {
+      return 0;
+    }
+    int weight = 0;
+    return weight;
+  }
+
+  //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble
+  int findHeartRate(List<int> values) {
+    if (values.isEmpty) {
       return 0;
     }
 
     int flags = values[0];
     String flagStr = flags.toRadixString(2);
+
     List<String> flagsArray = flagStr.split("");
+    while (flagsArray.length < 8) {
+      flagsArray.insert(0, "0");
+    }
 
     //find if the heart rate is U8 or U16 from the flag
-    if(flagsArray[0] == "0" || flagsArray.length <= 3){
+    if (flagsArray[0] == "0" || values.length < 3) {
       //U8
-      return values[1];
+      return values.elementAt(1);
     } else {
       //U16
-      ByteBuffer buffer = Uint8List.fromList(values.sublist(1,3)).buffer;
+      if (kDebugMode) {
+        print('in else');
+      }
+      ByteBuffer buffer = Uint8List.fromList(values.sublist(1, 3)).buffer;
       ByteData heartRateBuffer = ByteData.view(buffer);
       int heartRate = heartRateBuffer.getUint16(0, Endian.little);
       return heartRate;
