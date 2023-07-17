@@ -5,7 +5,7 @@ class Bluetooth {
   FlutterBlue flutterBlue = FlutterBlue.instance;
   List<ScanResult> scanResultList = <ScanResult>[];
   final String heartRateMonitorUUID = '180d';
-  final String scaleUUID = '181D';
+  final String scaleUUID = '181d';
 
   Future<bool> checkBluetooth() async {
     if (await flutterBlue.isAvailable && await flutterBlue.isOn) {
@@ -14,10 +14,10 @@ class Bluetooth {
     return false;
   }
 
-  void scan() {
+  void scan(int timeInSeconds) {
     checkBluetooth().then((bool result) {
       if (result) {
-        flutterBlue.startScan(timeout: const Duration(seconds: 4));
+        flutterBlue.startScan(timeout: Duration(seconds: timeInSeconds));
 
         flutterBlue.scanResults.listen((results) {
           scanResultList = results;

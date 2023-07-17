@@ -22,57 +22,87 @@ class DevicePage extends StatefulWidget {
 class _DevicePage extends State<DevicePage> {
   String infoString =
       '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
-  int _buttonCount = 1;
 
   changeInfoString(String str) {
     setState(() {
+      if (kDebugMode) {
+        print('changing info string to: $str');
+      }
       infoString = str;
     });
+  }
+
+  List<Widget> createButtonList(int buttonCount) {
+    if (widget.devices.isEmpty) {
+      //infoString = '\n\n\n     No Devices Found\n';
+      return List.empty();
+    } else {
+      List<Widget> buttonWidgets = List.filled(
+        buttonCount,
+        ButtonRow(
+          bluetooth: widget.bluetooth,
+          device: widget.devices.elementAt(0),
+          infoString: changeInfoString,
+        ),
+        growable: true,
+      );
+
+      for (int i = 0; i < widget.devices.length; i++) {
+        if (kDebugMode) {
+          print('device $i: ${widget.devices[i]}');
+        }
+        setState(() {
+          buttonWidgets[i] = ButtonRow(
+            bluetooth: widget.bluetooth,
+            device: widget.devices.elementAt(i),
+            infoString: changeInfoString,
+          );
+        });
+      }
+      infoString = '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
+      return buttonWidgets;
+    }
+  }
+
+  Widget loadingScreen() {
+    return const Opacity(
+      opacity: 0.2,
+      child: Align(
+        alignment: Alignment.center,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Opacity(
+                opacity: 1,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 20),
+                      child: CircularProgressIndicator(),
+                    ),
+                    SizedBox(
+                      height: 12,
+                    ),
+                    Text(
+                      'Finding new Devices...',
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.w700,
+                      ),
+                    )
+                  ],
+                )),
+          ],
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     int buttonCount = widget.devices.length;
 
-    List<Widget> buttonWidgets2 = List.generate(
-      _buttonCount,
-      (int i) => ButtonRow(
-          device: widget.devices.elementAt(0),
-          bluetooth: widget.bluetooth,
-          infoString: changeInfoString),
-    );
-
-    List<Widget> buttonWidgets = List.filled(
-      buttonCount,
-      ButtonRow(
-        bluetooth: widget.bluetooth,
-        device: widget.devices.elementAt(0),
-        infoString: changeInfoString,
-      ),
-    );
-
-    for (int i = 1; i < widget.devices.length; i++) {
-      _buttonCount++;
-      setState(() {
-        buttonWidgets2.add(ButtonRow(
-            device: widget.devices.elementAt(i),
-            bluetooth: widget.bluetooth,
-            infoString: changeInfoString));
-      });
-    }
-
-    for (int i = 0; i < widget.devices.length; i++) {
-      if (kDebugMode) {
-        print('device $i: ${widget.devices[i]}');
-      }
-      setState(() {
-        buttonWidgets[i] = ButtonRow(
-          bluetooth: widget.bluetooth,
-          device: widget.devices.elementAt(i),
-          infoString: changeInfoString,
-        );
-      });
-    }
+    List<Widget> buttonWidgets = createButtonList(buttonCount);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
@@ -86,6 +116,7 @@ class _DevicePage extends State<DevicePage> {
                 child: Image.asset('assets/images/logo.jpg'),
               ),
             ),
+
             //info text
             Align(
               alignment: Alignment.center,
@@ -99,6 +130,7 @@ class _DevicePage extends State<DevicePage> {
                 ),
               ),
             ),
+
             //buttons
             Align(
               alignment: Alignment.center,
@@ -107,7 +139,51 @@ class _DevicePage extends State<DevicePage> {
                 children: buttonWidgets,
               ),
             ),
-          ],
+
+            //scan button
+            Align(
+              alignment: Alignment.bottomRight,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  FloatingActionButton(
+                    onPressed: () {
+                      setState(
+                        () {
+                          infoString = '\n\n\nFinding devices again...\n\n';
+                          context.loaderOverlay.show();
+                          widget.devices.clear();
+                          buttonWidgets.clear();
+                          buttonCount = 0;
+                          widget.bluetooth.scan(4);
+                          Future.delayed(const Duration(seconds: 4), () {
+                            setState(() {
+                              for (int i = 0;
+                                  i < widget.bluetooth.scanResultList.length;
+                                  i++) {
+                                BluetoothDevice bluetoothDevice = widget
+                                    .bluetooth.scanResultList
+                                    .elementAt(i)
+                                    .device;
+                                if (bluetoothDevice.name.compareTo("") != 0) {
+                                  widget.devices.add(bluetoothDevice);
+                                  buttonCount++;
+                                }
+                              }
+                            });
+                            context.loaderOverlay.hide();
+                            buttonWidgets = createButtonList(buttonCount);
+                          });
+                        },
+                      );
+                    },
+                    heroTag: null,
+                    child: const Icon(Icons.search),
+                  )
+                ],
+              ),
+            ),
+          ], //children
         ),
       ),
     );
@@ -140,7 +216,8 @@ class _ButtonRow extends State<ButtonRow> {
                 textStyle: const TextStyle(fontSize: 20)),
             onPressed: () {
               setState(() {
-                scanButtonPressed(widget.device);
+                widget.infoString('\n\n\nConnecting to\n${widget.device}\n\n');
+                deviceConnectButtonPressed(widget.device);
               });
             },
             child: Text(
@@ -155,7 +232,7 @@ class _ButtonRow extends State<ButtonRow> {
     );
   }
 
-  scanButtonPressed(BluetoothDevice device) {
+  deviceConnectButtonPressed(BluetoothDevice device) {
     setState(() {
       if (kDebugMode) {
         print('in first scanButton\n');

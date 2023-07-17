@@ -20,13 +20,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> homePageWidgetsList = List.empty(growable: true);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
       body: SafeArea(
         child: Column(children: [
+
           //logo
           Align(
             alignment: Alignment.topCenter,
@@ -65,10 +65,9 @@ class _HomePageState extends State<HomePage> {
                     //scans for devices
                     setState(() {
                       context.loaderOverlay.show();
-                      homePageWidgetsList.clear();
                       List<BluetoothDevice> bleList = [];
                       connectedString = '\n\n\nScanning for Devices...\n\n';
-                      bluetooth.scan();
+                      bluetooth.scan(4);
                       Future.delayed(
                         const Duration(seconds: 4),
                         () {
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
                     }); //setState
                   }, //onPressed
                   heroTag: null,
-                  child: const Icon(Icons.bluetooth),
+                  child: const Icon(Icons.search),
                 ),
               ],
             ),
@@ -113,5 +112,5 @@ class _HomePageState extends State<HomePage> {
         ]),
       ),
     );
-  }
-}
+  }//build
+}//_homePageState

@@ -31,8 +31,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
   @override
   void initState() {
-    findServices(widget.device, widget.bluetooth, changeInfoString);
     super.initState();
+    findServices(widget.device, widget.bluetooth, changeInfoString);
   }
 
   @override
@@ -123,17 +123,19 @@ class _ConnectedPageState extends State<ConnectedPage> {
       if (c.properties.notify) {
         await c.setNotifyValue(true);
         c.value.listen((values) async {
-          setState(() {
-            info('Heart Rate is:\n\n ${findHeartRate(values)}\n\n\n\n\n');
-          });
+          if (mounted) {
+            setState(() {
+              info('Heart Rate is:\n\n ${findHeartRate(values)}\n\n\n\n\n');
+            });
+          }
         });
       }
     }
   }
 
   scale(BluetoothService service, Function(String str) info) async {
-    for(BluetoothCharacteristic c in service.characteristics){
-      if(c.properties.notify) {
+    for (BluetoothCharacteristic c in service.characteristics) {
+      if (c.properties.notify) {
         await c.setNotifyValue(true);
         c.value.listen((values) {
           setState(() {
@@ -144,11 +146,35 @@ class _ConnectedPageState extends State<ConnectedPage> {
     }
   }
 
-  int findWeight(List<int> values){
-    if(values.isEmpty) {
-      return 0;
-    }
+  int findWeight(List<int> values) {
+    bool isImperial = false;
     int weight = 0;
+    if (values.isEmpty) {
+      return weight;
+    }
+
+    int flags = values[0];
+    String flagStr = flags.toRadixString(2);
+
+    List<String> flagsArray = flagStr.split("");
+    while (flagsArray.length < 8) {
+      flagsArray.insert(0, "0");
+    }
+
+    if (flagsArray[0] == "1") {
+      isImperial = true;
+    }
+
+    if (isImperial) {
+      if (kDebugMode) {
+        print('is imperial');
+      }
+    } else {
+      if (kDebugMode) {
+        print('is not imperial');
+      }
+    }
+
     return weight;
   }
 
