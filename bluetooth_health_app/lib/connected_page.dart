@@ -139,43 +139,49 @@ class _ConnectedPageState extends State<ConnectedPage> {
         await c.setNotifyValue(true);
         c.value.listen((values) {
           setState(() {
-            info('Weight is:\n\n ${findWeight(values)}\n\n\n\n');
+            bool isImperial = false;
+
+            int flags = values[0];
+            String flagStr = flags.toRadixString(2);
+            List<String> flagsArray = flagStr.split("");
+
+            while (flagsArray.length < 8) {
+              flagsArray.insert(0, "0");
+            }
+
+            if (flagsArray[0] == "1") {
+              isImperial = true;
+            }
+
+            if (isImperial) {
+              info(
+                  'Weight is:\n\n ${findWeightImperial(values, flagsArray)}lbs\n\n\n\n');
+            } else if (!isImperial) {
+              info(
+                  'Weight is:\n\n ${findWeightKG(values, flagsArray)}kg\n\n\n\n');
+            }
           });
         });
       }
     }
   }
 
-  int findWeight(List<int> values) {
-    bool isImperial = false;
-    int weight = 0;
-    if (values.isEmpty) {
-      return weight;
-    }
+  findWeightImperial(List<int> values, List<String> flagsArray) {
+    int weight = values[1];
+    String weightStr = weight.toRadixString(2);
+    List<String> weightArray = weightStr.split("");
+  
+    //while(weightArray.length < ){
 
-    int flags = values[0];
-    String flagStr = flags.toRadixString(2);
+    //}
+  }
 
-    List<String> flagsArray = flagStr.split("");
-    while (flagsArray.length < 8) {
-      flagsArray.insert(0, "0");
-    }
+  findWeightKG(List<int> values, List<String> flagsArray) {
+    int weight = values[1];
 
-    if (flagsArray[0] == "1") {
-      isImperial = true;
-    }
+    // if(){
 
-    if (isImperial) {
-      if (kDebugMode) {
-        print('is imperial');
-      }
-    } else {
-      if (kDebugMode) {
-        print('is not imperial');
-      }
-    }
-
-    return weight;
+    // }
   }
 
   //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble

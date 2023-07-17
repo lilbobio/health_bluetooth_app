@@ -22,5 +22,5 @@ class BLEApp extends StatelessWidget {
         home: const HomePage(title: 'MIE Bluetooth Scale App'),
       ),
     );
-  }//build
+  } //build
 }//BLEApp

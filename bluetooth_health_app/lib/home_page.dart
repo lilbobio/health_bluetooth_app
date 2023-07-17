@@ -26,7 +26,6 @@ class _HomePageState extends State<HomePage> {
       ),
       body: SafeArea(
         child: Column(children: [
-
           //logo
           Align(
             alignment: Alignment.topCenter,
@@ -112,5 +111,5 @@ class _HomePageState extends State<HomePage> {
         ]),
       ),
     );
-  }//build
+  } //build
 }//_homePageState
