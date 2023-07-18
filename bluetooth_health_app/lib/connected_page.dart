@@ -170,18 +170,38 @@ class _ConnectedPageState extends State<ConnectedPage> {
     int weight = values[1];
     String weightStr = weight.toRadixString(2);
     List<String> weightArray = weightStr.split("");
-  
-    //while(weightArray.length < ){
 
-    //}
+    while (weightArray.length < 32) {
+      weightArray.insert(0, "0");
+    }
   }
 
   findWeightKG(List<int> values, List<String> flagsArray) {
-    int weight = values[1];
+    int weightPart1 = values[1];
+    String weightP1Str = weightPart1.toRadixString(2);
+    List<String> weightP1Array = weightP1Str.split("");
 
-    // if(){
+    while (weightP1Array.length < 16) {
+      weightP1Array.insert(0, "0");
+    }
 
-    // }
+    int weightPart2 = values[2];
+    String weightP2Str = weightPart2.toRadixString(2);
+    List<String> weightP2Array = weightP2Str.split("");
+
+    while (weightP2Array.length < 16) {
+      weightP2Array.insert(0, "0");
+    }
+
+    //TODO: change this to match the 16 bit heart rate monitr below.
+    List<String> weight = List<String>.filled(32,"0");
+    for(int i = 0; i < 16; i++){
+      weight[i] = weightP1Array[i];
+    }
+    for(int i = 0; i < 16; i++){
+      weight[i+16] = weightP2Array[i];
+    }
+    int realWeight = ;
   }
 
   //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble
