@@ -8,3 +8,7 @@ The app will have a button to connect to the bluetooth device and you have to sp
 
 ## Author
 This App was created by Dominic Oaldon.
+
+
+## Notes
+[Google Drive Link](https://docs.google.com/document/d/1tMROo_rObtT972zS42XL3zOv_wVSsJWuNO4OBSkATlc/edit?pli=1)
