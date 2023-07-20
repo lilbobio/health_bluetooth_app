@@ -113,6 +113,11 @@ class _ConnectedPageState extends State<ConnectedPage> {
             print('connected to a scale');
           }
           scale(service, info);
+        } else if (uuid.compareTo(bluetooth.bloodPressureUUID) == 0) {
+          if (kDebugMode) {
+            print('connected to a blood pressure monitor');
+          }
+          bloodPressureMonitor(service, info);
         }
       }
     });
@@ -122,10 +127,25 @@ class _ConnectedPageState extends State<ConnectedPage> {
     for (BluetoothCharacteristic c in service.characteristics) {
       if (c.properties.notify) {
         await c.setNotifyValue(true);
-        c.value.listen((values) async {
+        c.value.listen((values) {
           if (mounted) {
             setState(() {
               info('Heart Rate is:\n\n ${findHeartRate(values)}\n\n\n\n\n');
+            });
+          }
+        });
+      }
+    }
+  }
+
+  bloodPressureMonitor(BluetoothService service, Function(String str) info) async{
+    for(BluetoothCharacteristic c in service.characteristics) {
+      if(c.properties.notify) {
+        await c.setNotifyValue(true) ;
+        c.value.listen((values) {
+          if(mounted){
+            setState(() {
+              info('Blood Pressure is:\n\n ${findBloodPressure(values)}\n\n\n\n\n');
             });
           }
         });
@@ -138,7 +158,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
       if (c.properties.notify) {
         await c.setNotifyValue(true);
         c.value.listen((values) {
-          setState(() {
+          if(mounted) {
+            setState(() {
             bool isImperial = false;
 
             int flags = values[0];
@@ -155,53 +176,48 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
             if (isImperial) {
               info(
-                  'Weight is:\n\n ${findWeightImperial(values, flagsArray)}lbs\n\n\n\n');
+                  'Weight is:\n\n ${findWeight(values, flagsArray)}lbs\n\n\n\n');
             } else if (!isImperial) {
               info(
-                  'Weight is:\n\n ${findWeightKG(values, flagsArray)}kg\n\n\n\n');
+                  'Weight is:\n\n ${findWeight(values, flagsArray)}kg\n\n\n\n');
             }
           });
+          }
         });
       }
     }
   }
 
-  findWeightImperial(List<int> values, List<String> flagsArray) {
-    int weight = values[1];
-    String weightStr = weight.toRadixString(2);
-    List<String> weightArray = weightStr.split("");
-
-    while (weightArray.length < 32) {
-      weightArray.insert(0, "0");
-    }
-  }
-
-  findWeightKG(List<int> values, List<String> flagsArray) {
+  int findWeight(List<int> values, List<String> flagsArray) {
     int weightPart1 = values[1];
     String weightP1Str = weightPart1.toRadixString(2);
     List<String> weightP1Array = weightP1Str.split("");
-
-    while (weightP1Array.length < 16) {
-      weightP1Array.insert(0, "0");
-    }
 
     int weightPart2 = values[2];
     String weightP2Str = weightPart2.toRadixString(2);
     List<String> weightP2Array = weightP2Str.split("");
 
     while (weightP2Array.length < 16) {
+      weightP1Array.insert(0, "0");
       weightP2Array.insert(0, "0");
     }
 
-    //TODO: change this to match the 16 bit heart rate monitr below.
-    List<String> weight = List<String>.filled(32,"0");
-    for(int i = 0; i < 16; i++){
-      weight[i] = weightP1Array[i];
+    List<int> weightList = List<int>.filled(32, 0);
+    for (int i = 0; i < 16; i++) {
+      weightList[i] = int.parse(weightP1Array[i]);
     }
-    for(int i = 0; i < 16; i++){
-      weight[i+16] = weightP2Array[i];
+    for (int i = 0; i < 16; i++) {
+      weightList[i + 16] = int.parse(weightP2Array[i]);
     }
-    int realWeight = ;
+
+    ByteBuffer buffer = Uint32List.fromList(weightList).buffer;
+    ByteData weightBuffer = ByteData.view(buffer);
+    int weight = weightBuffer.getInt32(0, Endian.little);
+    return weight;
+  }
+
+  int findBloodPressure(List<int> values){
+    
   }
 
   //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble

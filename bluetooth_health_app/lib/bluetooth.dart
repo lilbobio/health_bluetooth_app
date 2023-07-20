@@ -6,6 +6,7 @@ class Bluetooth {
   List<ScanResult> scanResultList = <ScanResult>[];
   final String heartRateMonitorUUID = '180d';
   final String scaleUUID = '181d';
+  final String bloodPressureUUID = '1810';
 
   Future<bool> checkBluetooth() async {
     if (await flutterBlue.isAvailable && await flutterBlue.isOn) {
