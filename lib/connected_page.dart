@@ -216,8 +216,9 @@ class _ConnectedPageState extends State<ConnectedPage> {
     return weight;
   }
 
+  //TODO: Finish this function
   int findBloodPressure(List<int> values){
-    
+    return 0;
   }
 
   //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble
