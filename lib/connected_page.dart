@@ -138,14 +138,29 @@ class _ConnectedPageState extends State<ConnectedPage> {
     }
   }
 
-  bloodPressureMonitor(BluetoothService service, Function(String str) info) async{
-    for(BluetoothCharacteristic c in service.characteristics) {
-      if(c.properties.notify) {
-        await c.setNotifyValue(true) ;
+  bloodPressureMonitor(
+      BluetoothService service, Function(String str) info) async {
+    for (BluetoothCharacteristic c in service.characteristics) {
+      if (c.properties.notify) {
+        await c.setNotifyValue(true);
         c.value.listen((values) {
-          if(mounted){
+          if (mounted) {
             setState(() {
-              info('Blood Pressure is:\n\n ${findBloodPressure(values)}\n\n\n\n\n');
+              int flags = values[0];
+              String flagStr = flags.toRadixString(2);
+
+              List<String> flagsArray = flagStr.split("");
+              while (flagsArray.length < 4) {
+                flagsArray.insert(0, "0");
+              }
+
+              if (flagsArray[0] == "0") {
+                info(
+                    'Blood Pressure is:\n\n ${findBloodPressure(values, flagsArray)}mmHg\n\n\n\n\n');
+              } else {
+                info(
+                    'Blood Pressure is:\n\n ${findBloodPressure(values, flagsArray)}kPa\n\n\n\n\n');
+              }
             });
           }
         });
@@ -158,30 +173,30 @@ class _ConnectedPageState extends State<ConnectedPage> {
       if (c.properties.notify) {
         await c.setNotifyValue(true);
         c.value.listen((values) {
-          if(mounted) {
+          if (mounted) {
             setState(() {
-            bool isImperial = false;
+              bool isImperial = false;
 
-            int flags = values[0];
-            String flagStr = flags.toRadixString(2);
-            List<String> flagsArray = flagStr.split("");
+              int flags = values[0];
+              String flagStr = flags.toRadixString(2);
+              List<String> flagsArray = flagStr.split("");
 
-            while (flagsArray.length < 8) {
-              flagsArray.insert(0, "0");
-            }
+              while (flagsArray.length < 8) {
+                flagsArray.insert(0, "0");
+              }
 
-            if (flagsArray[0] == "1") {
-              isImperial = true;
-            }
+              if (flagsArray[0] == "1") {
+                isImperial = true;
+              }
 
-            if (isImperial) {
-              info(
-                  'Weight is:\n\n ${findWeight(values, flagsArray)}lbs\n\n\n\n');
-            } else if (!isImperial) {
-              info(
-                  'Weight is:\n\n ${findWeight(values, flagsArray)}kg\n\n\n\n');
-            }
-          });
+              if (isImperial) {
+                info(
+                    'Weight is:\n\n ${findWeight(values, flagsArray)}lbs\n\n\n\n');
+              } else if (!isImperial) {
+                info(
+                    'Weight is:\n\n ${findWeight(values, flagsArray)}kg\n\n\n\n');
+              }
+            });
           }
         });
       }
@@ -217,7 +232,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
   }
 
   //TODO: Finish this function
-  int findBloodPressure(List<int> values){
+  int findBloodPressure(List<int> values, List<String> flagsArray) {
+    if (values.isEmpty) {
+      return 0;
+    }
+
+    while (flagsArray.length < 4) {
+      flagsArray.insert(0, "0");
+    }
+
+    
     return 0;
   }
 

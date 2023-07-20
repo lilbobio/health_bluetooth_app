@@ -6,6 +6,7 @@
         "github.vscode-pull-request-github",
         "dart-code.flutter",
         "firefox-devtools.vscode-firefox-debug",
-        "dart-code.dart-code"
+        "dart-code.dart-code",
+        "streetsidesoftware.code-spell-checker"
     ]
 }
