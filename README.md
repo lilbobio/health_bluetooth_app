@@ -1,6 +1,6 @@
 # MIE Bluetooth Health App
 
-A flutter app for Medical Informatic Engineering (MIE).
+A flutter app for Medical Informatics Engineering (MIE).
 
 ## About
 This app is for connecting bluetooth scales and blood pressure tests.
