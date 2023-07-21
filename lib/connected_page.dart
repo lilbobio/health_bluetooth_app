@@ -70,6 +70,25 @@ class _ConnectedPageState extends State<ConnectedPage> {
               ),
             ),
 
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    textStyle: const TextStyle(fontSize: 20)),
+                onPressed: () {
+                  if (kDebugMode) {
+                    print('wanted to save value\n will implement later');
+                  }
+                },
+                child: const Text(
+                  'Save Value',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                  ),
+                ),
+              ),
+            ),
+
             //disconnect button
             Align(
               alignment: Alignment.bottomCenter,
@@ -241,7 +260,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
       flagsArray.insert(0, "0");
     }
 
-    
     return 0;
   }
 
