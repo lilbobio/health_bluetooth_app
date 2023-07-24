@@ -22,6 +22,9 @@ class DevicePage extends StatefulWidget {
 class _DevicePage extends State<DevicePage> {
   String infoString =
       '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
+  bool isOnAssociated = true;
+  List<BluetoothDevice> associatedDevices =
+      List<BluetoothDevice>.empty(growable: true);
 
   changeInfoString(String str) {
     setState(() {
@@ -32,13 +35,34 @@ class _DevicePage extends State<DevicePage> {
     });
   }
 
-  List<Widget> createButtonList(int buttonCount) {
+  List<Widget> createButtonList(int buttonCount, int associatedCount) {
+    if (isOnAssociated) {
+      if (associatedDevices.isEmpty) {
+        setState(() {
+          infoString = '\n\n\n     No Associated Devices\n';
+        });
+        return List.empty();
+      } else {
+        List<Widget> buttonWidgets = List.filled(
+          associatedCount,
+          ButtonRow(
+            bluetooth: widget.bluetooth,
+            device: associatedDevices.elementAt(0),
+            infoString: changeInfoString,
+          ),
+          growable: true,
+        );
+      }
+    }
+
     if (widget.devices.isEmpty) {
-      //infoString = '\n\n\n     No Devices Found\n';
+      setState(() {
+        infoString = '\n\n\n     No Devices Found\n';
+      });
       return List.empty();
     } else {
       List<Widget> buttonWidgets = List.filled(
-        buttonCount,
+        buttonCount - associatedCount,
         ButtonRow(
           bluetooth: widget.bluetooth,
           device: widget.devices.elementAt(0),
@@ -73,34 +97,36 @@ class _DevicePage extends State<DevicePage> {
           mainAxisSize: MainAxisSize.min,
           children: [
             Opacity(
-                opacity: 1,
-                child: Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 20),
-                      child: CircularProgressIndicator(),
-                    ),
-                    SizedBox(
-                      height: 12,
-                    ),
-                    Text(
-                      'Finding new Devices...',
-                      style: TextStyle(
-                        fontSize: 18.0,
-                        fontWeight: FontWeight.w700,
-                      ),
-                    )
-                  ],
-                )),
+              opacity: 1,
+              child: Column(children: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20),
+                  child: CircularProgressIndicator(),
+                ),
+                SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  'Finding new Devices...',
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.w700,
+                  ),
+                )
+              ]),
+            ),
           ],
         ),
       ),
     );
   }
 
+  changeFromAssociated(bool isOnAssociated) {}
+
   @override
   Widget build(BuildContext context) {
     int buttonCount = widget.devices.length;
+    String associatedButtonText = 'Change to\n non-Associated Devices';
 
     List<Widget> buttonWidgets = createButtonList(buttonCount);
 
@@ -137,6 +163,48 @@ class _DevicePage extends State<DevicePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: buttonWidgets,
+              ),
+            ),
+
+            //see associated buttons
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        textStyle: const TextStyle(fontSize: 20)),
+                    onPressed: () {
+                      setState(() {
+                        if (kDebugMode) {
+                          print('isOnAssociated: $isOnAssociated');
+                        }
+                        changeFromAssociated(isOnAssociated);
+                        isOnAssociated = !isOnAssociated;
+                        if (kDebugMode) {
+                          print('isOnAssociated: $isOnAssociated');
+                        }
+                        if (isOnAssociated) {
+                          associatedButtonText =
+                              'Change to\n non-Associated Devices';
+                        } else {
+                          associatedButtonText =
+                              'Change to\n Associated Devices';
+                        }
+                      });
+                    },
+                    child: Text(
+                      associatedButtonText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                        backgroundColor: Colors.blue,
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
 
