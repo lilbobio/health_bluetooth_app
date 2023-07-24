@@ -1,9 +1,9 @@
-import 'package:bluetooth_health_app/connected_page.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'button_row.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage(
@@ -23,6 +23,7 @@ class _DevicePage extends State<DevicePage> {
   String infoString =
       '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
   bool isOnAssociated = true;
+
   List<BluetoothDevice> associatedDevices =
       List<BluetoothDevice>.empty(growable: true);
 
@@ -49,42 +50,60 @@ class _DevicePage extends State<DevicePage> {
             bluetooth: widget.bluetooth,
             device: associatedDevices.elementAt(0),
             infoString: changeInfoString,
+            associatedDevices: associatedDevices,
           ),
           growable: true,
         );
-      }
-    }
 
-    if (widget.devices.isEmpty) {
-      setState(() {
-        infoString = '\n\n\n     No Devices Found\n';
-      });
-      return List.empty();
-    } else {
-      List<Widget> buttonWidgets = List.filled(
-        buttonCount - associatedCount,
-        ButtonRow(
-          bluetooth: widget.bluetooth,
-          device: widget.devices.elementAt(0),
-          infoString: changeInfoString,
-        ),
-        growable: true,
-      );
-
-      for (int i = 0; i < widget.devices.length; i++) {
-        if (kDebugMode) {
-          print('device $i: ${widget.devices[i]}');
+        for (int i = 0; i < associatedDevices.length; i++) {
+          if (kDebugMode) {
+            print('device $i: ${associatedDevices[i]}');
+          }
+          setState(() {
+            buttonWidgets[i] = ButtonRow(
+                device: associatedDevices.elementAt(i),
+                bluetooth: widget.bluetooth,
+                infoString: changeInfoString,
+                associatedDevices: associatedDevices);
+          });
         }
-        setState(() {
-          buttonWidgets[i] = ButtonRow(
-            bluetooth: widget.bluetooth,
-            device: widget.devices.elementAt(i),
-            infoString: changeInfoString,
-          );
-        });
+        return buttonWidgets;
       }
-      infoString = '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
-      return buttonWidgets;
+    } else {
+      if (widget.devices.isEmpty) {
+        setState(() {
+          infoString = '\n\n\n     No Devices Found\n';
+        });
+        return List.empty();
+      } else {
+        List<Widget> buttonWidgets = List.filled(
+          buttonCount - associatedCount,
+          ButtonRow(
+            bluetooth: widget.bluetooth,
+            device: widget.devices.elementAt(0),
+            infoString: changeInfoString,
+            associatedDevices: associatedDevices,
+          ),
+          growable: true,
+        );
+
+        for (int i = 0; i < widget.devices.length; i++) {
+          if (kDebugMode) {
+            print('device $i: ${widget.devices[i]}');
+          }
+          setState(() {
+            buttonWidgets[i] = ButtonRow(
+              bluetooth: widget.bluetooth,
+              device: widget.devices.elementAt(i),
+              infoString: changeInfoString,
+              associatedDevices: associatedDevices,
+            );
+          });
+        }
+        infoString =
+            '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
+        return buttonWidgets;
+      }
     }
   }
 
@@ -121,14 +140,17 @@ class _DevicePage extends State<DevicePage> {
     );
   }
 
-  changeFromAssociated(bool isOnAssociated) {}
+  List<Widget> changeFromAssociated(int buttonCount, int associatedCount) {
+    return createButtonList(buttonCount, associatedCount);
+  }
 
   @override
   Widget build(BuildContext context) {
     int buttonCount = widget.devices.length;
     String associatedButtonText = 'Change to\n non-Associated Devices';
 
-    List<Widget> buttonWidgets = createButtonList(buttonCount);
+    List<Widget> buttonWidgets =
+        createButtonList(buttonCount, associatedDevices.length);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
@@ -181,8 +203,10 @@ class _DevicePage extends State<DevicePage> {
                         if (kDebugMode) {
                           print('isOnAssociated: $isOnAssociated');
                         }
-                        changeFromAssociated(isOnAssociated);
+                        buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
+                        buttonWidgets = changeFromAssociated(
+                            widget.devices.length, associatedDevices.length);
                         if (kDebugMode) {
                           print('isOnAssociated: $isOnAssociated');
                         }
@@ -240,7 +264,8 @@ class _DevicePage extends State<DevicePage> {
                               }
                             });
                             context.loaderOverlay.hide();
-                            buttonWidgets = createButtonList(buttonCount);
+                            buttonWidgets = createButtonList(
+                                buttonCount, associatedDevices.length);
                           });
                         },
                       );
@@ -255,79 +280,5 @@ class _DevicePage extends State<DevicePage> {
         ),
       ),
     );
-  }
-}
-
-class ButtonRow extends StatefulWidget {
-  const ButtonRow(
-      {super.key,
-      required this.device,
-      required this.bluetooth,
-      required this.infoString});
-  final BluetoothDevice device;
-  final Bluetooth bluetooth;
-  final Function(String str) infoString;
-
-  @override
-  State<StatefulWidget> createState() => _ButtonRow();
-}
-
-class _ButtonRow extends State<ButtonRow> {
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      width: 170.0,
-      child: Column(
-        children: <Widget>[
-          ElevatedButton(
-            style: ElevatedButton.styleFrom(
-                textStyle: const TextStyle(fontSize: 20)),
-            onPressed: () {
-              setState(() {
-                widget.infoString('\n\n\nConnecting to\n${widget.device}\n\n');
-                deviceConnectButtonPressed(widget.device);
-              });
-            },
-            child: Text(
-              widget.device.name,
-              style: const TextStyle(
-                fontSize: 18.0,
-              ),
-            ),
-          )
-        ],
-      ),
-    );
-  }
-
-  deviceConnectButtonPressed(BluetoothDevice device) {
-    setState(() {
-      if (kDebugMode) {
-        print('in first scanButton\n');
-      }
-    });
-
-    widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
-    context.loaderOverlay.show();
-    if (kDebugMode) {
-      print('is visible: ${context.loaderOverlay.visible}\n');
-    }
-    widget.bluetooth.connect(device).then((value) {
-      if (kDebugMode) {
-        print('${device.name} is connected\n');
-      }
-      setState(() {
-        context.loaderOverlay.hide();
-        Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: ((context) => ConnectedPage(
-                    bluetooth: widget.bluetooth,
-                    title: device.name,
-                    device: device,
-                  )),
-            ));
-      });
-    });
   }
 }
