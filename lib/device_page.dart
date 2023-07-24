@@ -42,7 +42,7 @@ class _DevicePage extends State<DevicePage> {
         setState(() {
           infoString = '\n\n\n     No Associated Devices\n';
         });
-        return List.empty();
+        return List.empty(growable: true);
       } else {
         List<Widget> buttonWidgets = List.filled(
           associatedCount,
@@ -74,7 +74,7 @@ class _DevicePage extends State<DevicePage> {
         setState(() {
           infoString = '\n\n\n     No Devices Found\n';
         });
-        return List.empty();
+        return List.empty(growable: true);
       } else {
         List<Widget> buttonWidgets = List.filled(
           buttonCount - associatedCount,

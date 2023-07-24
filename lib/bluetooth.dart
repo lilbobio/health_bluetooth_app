@@ -1,8 +1,10 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter_blue/flutter_blue.dart';
+import 'package:flutter_reactive_ble/flutter_reactive_ble.dart' as frb;
 
 class Bluetooth {
   FlutterBlue flutterBlue = FlutterBlue.instance;
+  frb.FlutterReactiveBle flutterReactiveBle = frb.FlutterReactiveBle(); 
   List<ScanResult> scanResultList = <ScanResult>[];
   final String heartRateMonitorUUID = '180d';
   final String scaleUUID = '181d';
