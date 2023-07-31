@@ -152,6 +152,7 @@ class _DevicePage extends State<DevicePage> {
                 ),
                 Text(
                   'Finding new Devices...',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.w700,

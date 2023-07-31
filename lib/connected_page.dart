@@ -54,6 +54,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
               alignment: Alignment.center,
               child: Text(
                 infoText,
+                textAlign: TextAlign.center,
                 style: const TextStyle(fontSize: 20),
               ),
             ),
@@ -81,6 +82,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 },
                 child: const Text(
                   'Save Value',
+                  textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 18.0,
                   ),
@@ -102,6 +104,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 },
                 child: Text(
                   'Disconnect from ${widget.title}',
+                  textAlign: TextAlign.center,
                   style: const TextStyle(
                     fontSize: 18.0,
                   ),
