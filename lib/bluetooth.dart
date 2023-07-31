@@ -18,6 +18,9 @@ class Bluetooth {
   // ignore: avoid_init_to_null
   StreamSubscription? deviceConnection = null;
 
+  //TODO: Add a function that checks if the device is able to connect to ble
+
+
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 

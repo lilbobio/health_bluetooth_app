@@ -23,6 +23,8 @@ class _DevicePage extends State<DevicePage> {
   List<DiscoveredDevice> associatedDevices =
       List<DiscoveredDevice>.empty(growable: true);
 
+  List<String> associatedDevicesIds = List<String>.empty(growable: true);
+
   @override
   void initState() {
     super.initState();
@@ -69,6 +71,9 @@ class _DevicePage extends State<DevicePage> {
   }
 
   List<Widget> createButtonList(int buttonCount, int associatedCount) {
+    for (int i = 0; i < associatedDevices.length; i++) {
+      associatedDevicesIds.add(associatedDevices.elementAt(i).id);
+    }
     if (isOnAssociated) {
       if (associatedDevices.isEmpty) {
         setState(() {
@@ -111,9 +116,11 @@ class _DevicePage extends State<DevicePage> {
         List<Widget> buttonWidgets = List.empty(growable: true);
 
         for (int i = 0; i < bluetooth.devices.length; i++) {
-          if (!associatedDevices.contains(bluetooth.devices.elementAt(i))) {
+          if (!associatedDevicesIds
+              .contains(bluetooth.devices.elementAt(i).id)) {
             if (kDebugMode) {
-              print('device $i: ${bluetooth.devices[i]}');
+              print(
+                  'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
             }
             setState(() {
               buttonWidgets.add(ButtonRow(
@@ -231,7 +238,6 @@ class _DevicePage extends State<DevicePage> {
                         }
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        buttonWidgets.clear();
                         buttonWidgets = changeFromAssociated(
                             bluetooth.devices.length, associatedDevices.length);
                         if (kDebugMode) {
@@ -251,7 +257,7 @@ class _DevicePage extends State<DevicePage> {
                           });
                         } else {
                           setState(() {
-                            if (bluetooth.devices.isEmpty) {
+                            if (bluetooth.devices.isNotEmpty) {
                               changeInfoString(
                                   '\n\n\nClick on the Device you want to connect to\n\n');
                             } else {

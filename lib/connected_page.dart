@@ -99,7 +99,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 onPressed: () {
                   setState(() {
                     widget.bluetooth.disconnect();
-                    Navigator.pop(context);
+                    Navigator.pop(context, true);
                   });
                 },
                 child: Text(
@@ -152,8 +152,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n\n');
-                infoText = '\n\n\nConnected to ${widget.device.name}\n\n';
+                info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n');
+                infoText = '\n\n\nConnected to ${widget.device.name}\n';
               });
             }
           }, onError: (dynamic error) {
