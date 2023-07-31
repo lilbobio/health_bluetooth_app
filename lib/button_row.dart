@@ -4,20 +4,18 @@ import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
 import 'bluetooth.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-//import 'package:flutter_blue/flutter_blue.dart';
 
 class ButtonRow extends StatefulWidget {
-  const ButtonRow({
-    super.key,
-    required this.device,
-    required this.bluetooth,
-    required this.infoString,
-    // required this.associatedDevices
-  });
+  const ButtonRow(
+      {super.key,
+      required this.device,
+      required this.bluetooth,
+      required this.infoString,
+      required this.associatedDevices});
   final DiscoveredDevice device;
   final Bluetooth bluetooth;
   final Function(String str) infoString;
-  // final List<DiscoveredDevice> associatedDevices;
+  final List<DiscoveredDevice> associatedDevices;
 
   @override
   State<StatefulWidget> createState() => _ButtonRow();
@@ -41,6 +39,7 @@ class _ButtonRow extends State<ButtonRow> {
             },
             child: Text(
               widget.device.name,
+              textAlign: TextAlign.center,
               style: const TextStyle(
                 fontSize: 18.0,
               ),
@@ -63,15 +62,12 @@ class _ButtonRow extends State<ButtonRow> {
         print('is visible: ${context.loaderOverlay.visible}\n');
       }
       widget.bluetooth.connect(device);
-      while (!widget.bluetooth.isConnected) {
-        if (kDebugMode) {
-          print('connecting to device');
-        }
-      }
     });
 
     setState(() {
-      // widget.associatedDevices.add(device);
+      if (!widget.associatedDevices.contains(device)) {
+        widget.associatedDevices.add(device);
+      }
       context.loaderOverlay.hide();
       Navigator.push(
           context,

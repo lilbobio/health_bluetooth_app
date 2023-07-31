@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loader_overlay/loader_overlay.dart';
-import 'home_page.dart';
+import 'device_page.dart';
 
 void main() {
   runApp(const BLEApp());
@@ -19,7 +19,9 @@ class BLEApp extends StatelessWidget {
             brightness: Brightness.light,
             colorScheme:
                 ColorScheme.fromSeed(seedColor: Colors.green.shade700)),
-        home: const HomePage(title: 'MIE Bluetooth Scale App'),
+        home: const DevicePage(
+          title: 'MIE Bluetooth Health App',
+        ),
       ),
     );
   } //build

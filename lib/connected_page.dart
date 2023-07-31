@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'bluetooth.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-// import 'package:flutter_blue/flutter_blue.dart';
 
 class ConnectedPage extends StatefulWidget {
   const ConnectedPage(
@@ -22,7 +21,8 @@ class ConnectedPage extends StatefulWidget {
 }
 
 class _ConnectedPageState extends State<ConnectedPage> {
-  String servicesText = '\n\nFinding Services...\n\n\n';
+  String servicesText = '\n\nConnecting to Device...\n\n\n';
+  String infoText = '';
   late Timer everySecond;
   changeInfoString(String str) {
     setState(() {
@@ -33,6 +33,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   @override
   void initState() {
     super.initState();
+    infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
     findServices(widget.device, widget.bluetooth, changeInfoString);
   }
 
@@ -52,7 +53,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             Align(
               alignment: Alignment.center,
               child: Text(
-                '\n\n\nConnected to ${widget.device.name}\n\n',
+                infoText,
                 style: const TextStyle(fontSize: 20),
               ),
             ),
@@ -97,7 +98,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
                   setState(() {
                     widget.bluetooth.disconnect();
                     Navigator.pop(context);
-                    Navigator.pop(context);
                   });
                 },
                 child: Text(
@@ -117,6 +117,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
   findServices(
       DiscoveredDevice device, Bluetooth bluetooth, Function(String str) info) {
     bluetooth.findServices(device.id).then((services) async {
+      setState(() {
+        info('\n\nFinding Services...\n\n\n\n\n');
+        infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
+      });
       for (DiscoveredService service in services) {
         String serviceUUIDString = service.serviceId.toString().substring(4, 8);
         if (kDebugMode) {
@@ -146,6 +150,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             if (mounted) {
               setState(() {
                 info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n\n');
+                infoText = '\n\n\nConnected to ${widget.device.name}\n\n';
               });
             }
           }, onError: (dynamic error) {
