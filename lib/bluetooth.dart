@@ -19,12 +19,29 @@ class Bluetooth {
   StreamSubscription? deviceConnection = null;
 
   //TODO: Add a function that checks if the device is able to connect to ble
-
+  bool isAbleToConnect() {
+    bool isConnectable = false;
+    flutterReactiveBle.statusStream.listen((status) {
+      if (status == BleStatus.ready) {
+        isConnectable = true;
+      }
+    });
+    return isConnectable;
+  }
 
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 
   void frbScan() {
+    if (!isAbleToConnect()) {
+      if (kDebugMode) {
+        print('is not able to connect');
+      }
+    } else {
+      if (kDebugMode) {
+        print('is able to connect');
+      }
+    }
     devices.clear();
     subscription?.cancel();
     subscription = flutterReactiveBle.scanForDevices(
@@ -96,8 +113,15 @@ class Bluetooth {
     isConnected = false;
   }
 
-  Future<List<DiscoveredService>> findServices(String deviceId) async {
-    final result = await flutterReactiveBle.discoverServices(deviceId);
-    return result;
+  Future<List<DiscoveredService>?> findServices(String deviceId) async {
+    try {
+      final result = await flutterReactiveBle.discoverServices(deviceId);
+      return result;
+    } catch (e) {
+      if (kDebugMode) {
+        print('error occurred: $e');
+      }
+    }
+    return null;
   }
 }

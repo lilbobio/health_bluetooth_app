@@ -120,6 +120,9 @@ class _ConnectedPageState extends State<ConnectedPage> {
   findServices(
       DiscoveredDevice device, Bluetooth bluetooth, Function(String str) info) {
     bluetooth.findServices(device.id).then((services) async {
+      if (services == null) {
+        return;
+      }
       setState(() {
         info('\n\nFinding Services...\n\n\n\n\n');
         infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
