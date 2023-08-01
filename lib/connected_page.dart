@@ -1,9 +1,11 @@
 import 'dart:async';
 import 'dart:typed_data';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'bluetooth.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+
+import 'bluetooth.dart';
 
 class ConnectedPage extends StatefulWidget {
   const ConnectedPage(

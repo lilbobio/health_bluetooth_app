@@ -1,4 +1,5 @@
 import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -12,36 +13,46 @@ class Bluetooth {
   final Uuid scaleUuid = Uuid.parse('181D');
   final Uuid bloodPressureUuid = Uuid.parse('1810');
   bool isConnected = false;
-
+  // ignore: avoid_init_to_null
+  bool? isConnectable = null;
   // ignore: avoid_init_to_null
   StreamSubscription? subscription = null;
   // ignore: avoid_init_to_null
   StreamSubscription? deviceConnection = null;
 
   //TODO: Add a function that checks if the device is able to connect to ble
-  bool isAbleToConnect() {
-    bool isConnectable = false;
+  void isAbleToConnect() {
     flutterReactiveBle.statusStream.listen((status) {
       if (status == BleStatus.ready) {
         isConnectable = true;
+      } else {
+        isConnectable = false;
       }
     });
-    return isConnectable;
   }
 
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 
   void frbScan() {
-    if (!isAbleToConnect()) {
+    isAbleToConnect();
+
+    while (isConnectable == null) {
       if (kDebugMode) {
-        print('is not able to connect');
-      }
-    } else {
-      if (kDebugMode) {
-        print('is able to connect');
+        print('is connectable is null');
       }
     }
+
+    if (isConnectable == true) {
+      if (kDebugMode) {
+        print('is connectable');
+      }
+    } else if (isConnectable == false) {
+      if (kDebugMode) {
+        print('is not connectable');
+      }
+    }
+
     devices.clear();
     subscription?.cancel();
     subscription = flutterReactiveBle.scanForDevices(
