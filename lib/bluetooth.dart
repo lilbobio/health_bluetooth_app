@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
+import 'permissions.dart';
+
 class Bluetooth {
   FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
   List<DiscoveredDevice> devices = <DiscoveredDevice>[];
@@ -35,29 +37,26 @@ class Bluetooth {
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 
   void frbScan() {
-    isAbleToConnect();
+    Permissions permissions = Permissions();
 
-    while (isConnectable == null) {
-      if (kDebugMode) {
-        print('is connectable is null');
+    permissions.hasLocationEnabled().then((isEnabled) {
+      if (isEnabled) {
+        if (kDebugMode) {
+          print('location is enabled');
+        }
+      } else {
+        if (kDebugMode) {
+          print('location is not enabled');
+        }
       }
-    }
-
-    if (isConnectable == true) {
-      if (kDebugMode) {
-        print('is connectable');
-      }
-    } else if (isConnectable == false) {
-      if (kDebugMode) {
-        print('is not connectable');
-      }
-    }
+    });
 
     devices.clear();
     subscription?.cancel();
     subscription = flutterReactiveBle.scanForDevices(
-        withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
-        scanMode: ScanMode.balanced).listen((device) {
+      withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
+      scanMode: ScanMode.balanced,
+    ).listen((device) {
       if (device.name.isNotEmpty) {
         int index = 0;
         if (kDebugMode) {
@@ -85,6 +84,17 @@ class Bluetooth {
       if (kDebugMode) {
         print('the scan failed because of: $error');
         print('error stack: $stack');
+      }
+      if (error.toString().contains('code 3')) {
+        if (kDebugMode) {
+          print('Location Permission missing');
+        }
+      }
+
+      if (error.toString().contains('code 1')) {
+        if (kDebugMode) {
+          print('Bluetooth is disabled');
+        }
       }
     });
   }
