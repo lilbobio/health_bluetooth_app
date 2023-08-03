@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
-import 'permissions.dart';
-
 class Bluetooth {
   FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
   List<DiscoveredDevice> devices = <DiscoveredDevice>[];
@@ -22,43 +20,16 @@ class Bluetooth {
   // ignore: avoid_init_to_null
   StreamSubscription? deviceConnection = null;
 
-  //TODO: Add a function that checks if the device is able to connect to ble
-
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 
-  void frbScan() {
-    Permissions permissions = Permissions();
-
-    permissions.hasBluetooth().then((hasBluetooth) {
-      if(hasBluetooth){
-        if (kDebugMode) {
-          print('has Bluetooth');
-        }
-      }else{
-        if (kDebugMode) {
-          print('does not have bluetooth');
-        }
-      }
-    });
-
-    permissions.hasLocationEnabled().then((isEnabled) {
-      if (isEnabled) {
-        if (kDebugMode) {
-          print('location is enabled');
-        }
-      } else {
-        if (kDebugMode) {
-          print('location is not enabled');
-        }
-      }
-    });
-
+  Future<void> frbScan() async {
     devices.clear();
     subscription?.cancel();
     subscription = flutterReactiveBle.scanForDevices(
       withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
       scanMode: ScanMode.balanced,
+      requireLocationServicesEnabled: false,
     ).listen((device) {
       if (device.name.isNotEmpty) {
         int index = 0;
