@@ -23,21 +23,24 @@ class Bluetooth {
   StreamSubscription? deviceConnection = null;
 
   //TODO: Add a function that checks if the device is able to connect to ble
-  void isAbleToConnect() {
-    flutterReactiveBle.statusStream.listen((status) {
-      if (status == BleStatus.ready) {
-        isConnectable = true;
-      } else {
-        isConnectable = false;
-      }
-    });
-  }
 
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
 
   void frbScan() {
     Permissions permissions = Permissions();
+
+    permissions.hasBluetooth().then((hasBluetooth) {
+      if(hasBluetooth){
+        if (kDebugMode) {
+          print('has Bluetooth');
+        }
+      }else{
+        if (kDebugMode) {
+          print('does not have bluetooth');
+        }
+      }
+    });
 
     permissions.hasLocationEnabled().then((isEnabled) {
       if (isEnabled) {

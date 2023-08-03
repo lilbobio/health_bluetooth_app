@@ -1,3 +1,4 @@
+import 'package:bluetooth_health_app/permissions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
@@ -20,6 +21,7 @@ class _DevicePage extends State<DevicePage> {
   String associatedButtonText = 'Change to\n non-Associated Devices';
   bool isOnAssociated = true;
   Bluetooth bluetooth = Bluetooth();
+  bool hasBluetoothEnabled = false;
 
   List<DiscoveredDevice> associatedDevices =
       List<DiscoveredDevice>.empty(growable: true);
@@ -29,30 +31,42 @@ class _DevicePage extends State<DevicePage> {
   @override
   void initState() {
     super.initState();
-    setState(() {
-      context.loaderOverlay.show();
-      infoString = '\n\n\nScanning for devices...\n\n';
-      bluetooth.frbScan();
-      Future.delayed(const Duration(seconds: 4), () {
-        bluetooth.fbrEndScan();
-        context.loaderOverlay.hide();
-        if (bluetooth.devices.isEmpty) {
-          setState(() {
-            infoString = '\n\n\nFound 0 Relevant Devices\n\n';
+    Permissions permissions = Permissions();
+
+    permissions.hasBluetooth().then((hasBluetooth) {
+      if (hasBluetooth) {
+        hasBluetoothEnabled = true;
+        setState(() {
+          context.loaderOverlay.show();
+          changeInfoString('\n\n\nScanning for devices...\n\n');
+          bluetooth.frbScan();
+          Future.delayed(const Duration(seconds: 4), () {
+            bluetooth.fbrEndScan();
+            context.loaderOverlay.hide();
+            if (bluetooth.devices.isEmpty) {
+              setState(() {
+                changeInfoString('\n\n\nFound 0 Relevant Devices\n\n');
+              });
+            } else {
+              setState(() {
+                changeInfoString(
+                    '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => DevicePage(title: widget.title),
+                  ),
+                );
+              });
+            }
           });
-        } else {
-          setState(() {
-            infoString =
-                '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => DevicePage(title: widget.title),
-              ),
-            );
-          });
-        }
-      });
+        });
+      } else {
+        hasBluetoothEnabled = false;
+        setState(() {
+          changeInfoString('\n\nBluetooth is Not Enabled\n on this Device');
+        });
+      }
     });
   }
 
@@ -72,106 +86,76 @@ class _DevicePage extends State<DevicePage> {
   }
 
   List<Widget> createButtonList(int buttonCount, int associatedCount) {
-    for (int i = 0; i < associatedDevices.length; i++) {
-      associatedDevicesIds.add(associatedDevices.elementAt(i).id);
-    }
-    if (isOnAssociated) {
-      if (associatedDevices.isEmpty) {
-        setState(() {
-          infoString = '\n\n\n     No Associated Devices\n';
-        });
-        return List.empty(growable: true);
-      } else {
-        List<Widget> buttonWidgets = List.filled(
-          associatedCount,
-          ButtonRow(
-            bluetooth: bluetooth,
-            device: associatedDevices.elementAt(0),
-            infoString: changeInfoString,
-            associatedDevices: associatedDevices,
-          ),
-          growable: true,
-        );
-
-        for (int i = 0; i < associatedDevices.length; i++) {
-          if (kDebugMode) {
-            print('device $i: ${associatedDevices[i]}');
-          }
-          setState(() {
-            buttonWidgets[i] = ButtonRow(
-                device: associatedDevices.elementAt(i),
-                bluetooth: bluetooth,
-                infoString: changeInfoString,
-                associatedDevices: associatedDevices);
-          });
-        }
-        return buttonWidgets;
+    if (hasBluetoothEnabled) {
+      for (int i = 0; i < associatedDevices.length; i++) {
+        associatedDevicesIds.add(associatedDevices.elementAt(i).id);
       }
-    } else {
-      if (bluetooth.devices.isEmpty) {
-        setState(() {
-          infoString = '\n\n\n     No Devices Found\n';
-        });
-        return List.empty(growable: true);
-      } else {
-        List<Widget> buttonWidgets = List.empty(growable: true);
+      if (isOnAssociated) {
+        if (associatedDevices.isEmpty) {
+          setState(() {
+            changeInfoString('\n\n\n     No Associated Devices\n');
+          });
+          return List.empty(growable: true);
+        } else {
+          List<Widget> buttonWidgets = List.filled(
+            associatedCount,
+            ButtonRow(
+              bluetooth: bluetooth,
+              device: associatedDevices.elementAt(0),
+              infoString: changeInfoString,
+              associatedDevices: associatedDevices,
+            ),
+            growable: true,
+          );
 
-        for (int i = 0; i < bluetooth.devices.length; i++) {
-          if (!associatedDevicesIds
-              .contains(bluetooth.devices.elementAt(i).id)) {
+          for (int i = 0; i < associatedDevices.length; i++) {
             if (kDebugMode) {
-              print(
-                  'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
+              print('device $i: ${associatedDevices[i]}');
             }
             setState(() {
-              buttonWidgets.add(ButtonRow(
-                bluetooth: bluetooth,
-                device: bluetooth.devices.elementAt(i),
-                infoString: changeInfoString,
-                associatedDevices: associatedDevices,
-              ));
+              buttonWidgets[i] = ButtonRow(
+                  device: associatedDevices.elementAt(i),
+                  bluetooth: bluetooth,
+                  infoString: changeInfoString,
+                  associatedDevices: associatedDevices);
             });
           }
+          return buttonWidgets;
         }
-        infoString =
-            '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
-        return buttonWidgets;
-      }
-    }
-  }
+      } else {
+        if (bluetooth.devices.isEmpty) {
+          setState(() {
+            changeInfoString('\n\n\n     No Devices Found\n');
+          });
+          return List.empty(growable: true);
+        } else {
+          List<Widget> buttonWidgets = List.empty(growable: true);
 
-  Widget loadingScreen() {
-    return const Opacity(
-      opacity: 0.2,
-      child: Align(
-        alignment: Alignment.center,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Opacity(
-              opacity: 1,
-              child: Column(children: [
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20),
-                  child: CircularProgressIndicator(),
-                ),
-                SizedBox(
-                  height: 12,
-                ),
-                Text(
-                  'Finding new Devices...',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.w700,
-                  ),
-                )
-              ]),
-            ),
-          ],
-        ),
-      ),
-    );
+          for (int i = 0; i < bluetooth.devices.length; i++) {
+            if (!associatedDevicesIds
+                .contains(bluetooth.devices.elementAt(i).id)) {
+              if (kDebugMode) {
+                print(
+                    'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
+              }
+              setState(() {
+                buttonWidgets.add(ButtonRow(
+                  bluetooth: bluetooth,
+                  device: bluetooth.devices.elementAt(i),
+                  infoString: changeInfoString,
+                  associatedDevices: associatedDevices,
+                ));
+              });
+            }
+          }
+          changeInfoString(
+              '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
+          return buttonWidgets;
+        }
+      }
+    } else {
+      return List.empty(growable: true);
+    }
   }
 
   List<Widget> changeFromAssociated(int buttonCount, int associatedCount) {
@@ -292,7 +276,8 @@ class _DevicePage extends State<DevicePage> {
                     onPressed: () {
                       setState(
                         () {
-                          infoString = '\n\n\nFinding devices again...\n\n';
+                          changeInfoString(
+                              '\n\n\nFinding devices again...\n\n');
                           context.loaderOverlay.show();
                           bluetooth.devices.clear();
                           buttonWidgets.clear();

@@ -11,4 +11,8 @@ class Permissions {
     }
     return false;
   }
+
+  Future<bool> hasBluetooth() async {
+    return await Permission.bluetooth.serviceStatus.isEnabled;
+  }
 }
