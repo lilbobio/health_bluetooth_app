@@ -117,14 +117,21 @@ class Bluetooth {
         .connectToDevice(
             id: device.id, connectionTimeout: const Duration(seconds: 4))
         .listen((update) {
-      if (kDebugMode) {
-        print(update.connectionState);
-      }
+      // if (kDebugMode) {
+      //   print(update.connectionState);
+      // }
       if (update.connectionState == DeviceConnectionState.connected) {
+        isConnected = true;
         if (kDebugMode) {
           print('connected to device');
         }
-        isConnected = true;
+      }
+
+      if (update.connectionState == DeviceConnectionState.disconnected) {
+        if (kDebugMode) {
+          print('timed out');
+        }
+        isConnected = false;
       }
     });
   }

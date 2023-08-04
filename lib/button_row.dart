@@ -1,5 +1,4 @@
 import 'package:bluetooth_health_app/connected_page.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 import 'package:loader_overlay/loader_overlay.dart';
@@ -53,15 +52,15 @@ class _ButtonRow extends State<ButtonRow> {
 
   deviceConnectButtonPressed(DiscoveredDevice device) {
     setState(() {
-      if (kDebugMode) {
-        print('in first scanButton\n');
-      }
+      // if (kDebugMode) {
+      //   print('in first scanButton\n');
+      // }
 
       widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
       context.loaderOverlay.show();
-      if (kDebugMode) {
-        print('is visible: ${context.loaderOverlay.visible}\n');
-      }
+      // if (kDebugMode) {
+      //   print('is visible: ${context.loaderOverlay.visible}\n');
+      // }
       widget.bluetooth.connect(device);
     });
 

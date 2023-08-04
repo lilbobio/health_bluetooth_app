@@ -4,6 +4,7 @@ import 'dart:typed_data';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:loader_overlay/loader_overlay.dart';
 
 import 'bluetooth.dart';
 
@@ -36,7 +37,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
   void initState() {
     super.initState();
     infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
-    findServices(widget.device, widget.bluetooth, changeInfoString);
+    context.loaderOverlay.show();
+    Future.delayed(const Duration(seconds: 4), () {
+      context.loaderOverlay.hide();
+      if (widget.bluetooth.isConnected) {
+        findServices(widget.device, widget.bluetooth, changeInfoString);
+      } else {
+        widget.bluetooth.disconnect();
+        Navigator.pop(context, true);
+      }
+    });
   }
 
   @override
@@ -131,14 +141,14 @@ class _ConnectedPageState extends State<ConnectedPage> {
       });
       for (DiscoveredService service in services) {
         String serviceUUIDString = service.serviceId.toString().substring(4, 8);
-        if (kDebugMode) {
-          print('UUID: ${service.serviceId}');
-          print('UUID String: $serviceUUIDString');
-          print('Service characteristics Ids ${service.characteristicIds}');
-          print('service characteristics ${service.characteristics}');
-          print('hrm UUID: ${bluetooth.hrmUuid}');
-          print('');
-        }
+        // if (kDebugMode) {
+        //   print('UUID: ${service.serviceId}');
+        //   print('UUID String: $serviceUUIDString');
+        //   print('Service characteristics Ids ${service.characteristicIds}');
+        //   print('service characteristics ${service.characteristics}');
+        //   print('hrm UUID: ${bluetooth.hrmUuid}');
+        //   print('');
+        // }
         if (serviceUUIDString.compareTo(bluetooth.heartRateMonitorUUIDString) ==
             0) {
           if (kDebugMode) {
@@ -152,9 +162,9 @@ class _ConnectedPageState extends State<ConnectedPage> {
           bluetooth.flutterReactiveBle
               .subscribeToCharacteristic(characteristic)
               .listen((data) {
-            if (kDebugMode) {
-              print(data);
-            }
+            // if (kDebugMode) {
+            //   print(data);
+            // }
             if (mounted) {
               setState(() {
                 info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n');
