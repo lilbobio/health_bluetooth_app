@@ -117,9 +117,6 @@ class Bluetooth {
         .connectToDevice(
             id: device.id, connectionTimeout: const Duration(seconds: 4))
         .listen((update) {
-      // if (kDebugMode) {
-      //   print(update.connectionState);
-      // }
       if (update.connectionState == DeviceConnectionState.connected) {
         isConnected = true;
         if (kDebugMode) {

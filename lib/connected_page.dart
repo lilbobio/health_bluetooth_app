@@ -141,14 +141,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
       });
       for (DiscoveredService service in services) {
         String serviceUUIDString = service.serviceId.toString().substring(4, 8);
-        // if (kDebugMode) {
-        //   print('UUID: ${service.serviceId}');
-        //   print('UUID String: $serviceUUIDString');
-        //   print('Service characteristics Ids ${service.characteristicIds}');
-        //   print('service characteristics ${service.characteristics}');
-        //   print('hrm UUID: ${bluetooth.hrmUuid}');
-        //   print('');
-        // }
         if (serviceUUIDString.compareTo(bluetooth.heartRateMonitorUUIDString) ==
             0) {
           if (kDebugMode) {
@@ -162,9 +154,9 @@ class _ConnectedPageState extends State<ConnectedPage> {
           bluetooth.flutterReactiveBle
               .subscribeToCharacteristic(characteristic)
               .listen((data) {
-            // if (kDebugMode) {
-            //   print(data);
-            // }
+            if (kDebugMode) {
+              print(data);
+            }
             if (mounted) {
               setState(() {
                 info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n');
