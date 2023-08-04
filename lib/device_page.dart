@@ -64,7 +64,7 @@ class _DevicePage extends State<DevicePage> {
       } else {
         hasBluetoothEnabled = false;
         setState(() {
-          changeInfoString('\n\nBluetooth is Not Enabled\n on this Device');
+          changeInfoString('\n\n\nBluetooth Disabled\n\n');
         });
       }
     });
@@ -93,7 +93,7 @@ class _DevicePage extends State<DevicePage> {
       if (isOnAssociated) {
         if (associatedDevices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\n     No Associated Devices\n');
+            changeInfoString('\n\n\nNo Associated Devices\n');
           });
           return List.empty(growable: true);
         } else {
@@ -125,7 +125,7 @@ class _DevicePage extends State<DevicePage> {
       } else {
         if (bluetooth.devices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\n     No Devices Found\n');
+            changeInfoString('\n\n\nNo Devices Found\n');
           });
           return List.empty(growable: true);
         } else {
@@ -149,11 +149,12 @@ class _DevicePage extends State<DevicePage> {
             }
           }
           changeInfoString(
-              '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
+              '\n\n\nClick on the Device\nYou Want to Connect to\n\n');
           return buttonWidgets;
         }
       }
     } else {
+      changeInfoString('\n\n\nBluetooth Disabled\n\n');
       return List.empty(growable: true);
     }
   }
@@ -274,26 +275,40 @@ class _DevicePage extends State<DevicePage> {
                 children: <Widget>[
                   FloatingActionButton(
                     onPressed: () {
-                      setState(
-                        () {
-                          changeInfoString(
-                              '\n\n\nFinding devices again...\n\n');
-                          context.loaderOverlay.show();
-                          bluetooth.devices.clear();
-                          buttonWidgets.clear();
-                          buttonCount = 0;
-                          bluetooth.frbScan();
-                          Future.delayed(const Duration(seconds: 4), () {
-                            setState(() {
-                              bluetooth.fbrEndScan();
-                              buttonCount = bluetooth.devices.length;
+                      Permissions permissions = Permissions();
+
+                      permissions.hasBluetooth().then((hasBluetooth) {
+                        if (hasBluetooth) {
+                          hasBluetoothEnabled = true;
+                        } else {
+                          hasBluetoothEnabled = false;
+                        }
+                      });
+
+                      if (!hasBluetoothEnabled) {
+                        changeInfoString('\n\n\nBluetooth Disconnected\n\n');
+                      } else {
+                        setState(
+                          () {
+                            changeInfoString(
+                                '\n\n\nFinding devices again...\n\n');
+                            context.loaderOverlay.show();
+                            bluetooth.devices.clear();
+                            buttonWidgets.clear();
+                            buttonCount = 0;
+                            bluetooth.frbScan();
+                            Future.delayed(const Duration(seconds: 4), () {
+                              setState(() {
+                                bluetooth.fbrEndScan();
+                                buttonCount = bluetooth.devices.length;
+                              });
+                              context.loaderOverlay.hide();
+                              buttonWidgets = createButtonList(
+                                  buttonCount, associatedDevices.length);
                             });
-                            context.loaderOverlay.hide();
-                            buttonWidgets = createButtonList(
-                                buttonCount, associatedDevices.length);
-                          });
-                        },
-                      );
+                          },
+                        );
+                      }
                     },
                     heroTag: null,
                     child: const Icon(Icons.search),

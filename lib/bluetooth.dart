@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:io';
 
 import 'package:flutter/foundation.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class Bluetooth {
   FlutterReactiveBle flutterReactiveBle = FlutterReactiveBle();
@@ -22,55 +24,79 @@ class Bluetooth {
 
   //frbScan was inspired by:
   //https://github.com/epietrowicz/flutter_reactive_ble_example/blob/master/lib/src/ble/ble_scanner.dart
+  //and https://github.com/PhilipsHue/flutter_reactive_ble/issues/600
 
   Future<void> frbScan() async {
+    bool scan = false;
+    if (Platform.isAndroid) {
+      PermissionStatus locationPermission = await Permission.location.request();
+      PermissionStatus finePermission =
+          await Permission.locationWhenInUse.request();
+
+      if (locationPermission == PermissionStatus.granted &&
+          finePermission == PermissionStatus.granted) {
+        scan = true;
+      }
+    } else if (Platform.isIOS) {
+      scan = true;
+    }
+
     devices.clear();
     subscription?.cancel();
-    subscription = flutterReactiveBle.scanForDevices(
-      withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
-      scanMode: ScanMode.balanced,
-      requireLocationServicesEnabled: false,
-    ).listen((device) {
-      if (device.name.isNotEmpty) {
-        int index = 0;
-        if (kDebugMode) {
-          print('scanned device: $device');
-          print('${device.serviceUuids}');
-        }
-        while (index != device.serviceUuids.length) {
-          if (hrmUuid == device.serviceUuids.elementAt(index)) {
-            if (kDebugMode) {
-              print('hrmUuid == ${device.serviceUuids.elementAt(index)}');
-            }
-          }
-          index++;
-        }
 
-        final deviceIndex =
-            devices.indexWhere((element) => element.id == device.id);
-        if (deviceIndex >= 0) {
-          devices[deviceIndex] = device;
-        } else {
-          devices.add(device);
-        }
-      }
-    }, onError: (error, stack) {
+    if (scan) {
       if (kDebugMode) {
-        print('the scan failed because of: $error');
-        print('error stack: $stack');
+        print('is scanning');
       }
-      if (error.toString().contains('code 3')) {
-        if (kDebugMode) {
-          print('Location Permission missing');
-        }
-      }
+      subscription = flutterReactiveBle.scanForDevices(
+        withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
+        scanMode: ScanMode.balanced,
+      ).listen((device) {
+        if (device.name.isNotEmpty) {
+          int index = 0;
+          if (kDebugMode) {
+            print('scanned device: $device');
+            print('${device.serviceUuids}');
+          }
+          while (index != device.serviceUuids.length) {
+            if (hrmUuid == device.serviceUuids.elementAt(index)) {
+              if (kDebugMode) {
+                print('hrmUuid == ${device.serviceUuids.elementAt(index)}');
+              }
+            }
+            index++;
+          }
 
-      if (error.toString().contains('code 1')) {
-        if (kDebugMode) {
-          print('Bluetooth is disabled');
+          final deviceIndex =
+              devices.indexWhere((element) => element.id == device.id);
+          if (deviceIndex >= 0) {
+            devices[deviceIndex] = device;
+          } else {
+            devices.add(device);
+          }
         }
+      }, onError: (error, stack) {
+        if (kDebugMode) {
+          print('the scan failed because of: $error');
+          print('error stack: $stack');
+        }
+        if (error.toString().contains('code 3')) {
+          if (kDebugMode) {
+            print('Location Permission missing');
+          }
+        }
+
+        if (error.toString().contains('code 1')) {
+          if (kDebugMode) {
+            print('Bluetooth is disabled');
+          }
+        }
+      });
+    } else {
+      if (kDebugMode) {
+        print('did not scan');
       }
-    });
+    }
   }
 
   fbrEndScan() async {
@@ -87,10 +113,11 @@ class Bluetooth {
     if (kDebugMode) {
       print('going into device connection');
     }
-    deviceConnection =
-        flutterReactiveBle.connectToDevice(id: device.id).listen((update) {
+    deviceConnection = flutterReactiveBle
+        .connectToDevice(
+            id: device.id, connectionTimeout: const Duration(seconds: 4))
+        .listen((update) {
       if (kDebugMode) {
-        print('hello');
         print(update.connectionState);
       }
       if (update.connectionState == DeviceConnectionState.connected) {
