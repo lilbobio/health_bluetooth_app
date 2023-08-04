@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bluetooth_health_app/permissions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +24,8 @@ class _DevicePage extends State<DevicePage> {
   bool isOnAssociated = true;
   Bluetooth bluetooth = Bluetooth();
   bool hasBluetoothEnabled = false;
+
+  List<Widget> buttonWidgets = List.empty(growable: true);
 
   List<DiscoveredDevice> associatedDevices =
       List<DiscoveredDevice>.empty(growable: true);
@@ -56,7 +60,7 @@ class _DevicePage extends State<DevicePage> {
                   MaterialPageRoute(
                     builder: (context) => DevicePage(title: widget.title),
                   ),
-                );
+                ).then(onGoBack);
               });
             }
           });
@@ -79,13 +83,52 @@ class _DevicePage extends State<DevicePage> {
     });
   }
 
+  FutureOr onGoBack(dynamic value) {
+    setState(() {
+      if (kDebugMode) {
+        print('refreshing page');
+      }
+      Permissions permissions = Permissions();
+
+      permissions.hasBluetooth().then((hasBluetooth) {
+        if (hasBluetooth) {
+          hasBluetoothEnabled = true;
+        } else {
+          hasBluetoothEnabled = false;
+        }
+      });
+
+      if (!hasBluetoothEnabled) {
+        changeInfoString('\n\n\nBluetooth Disconnected\n\n');
+      } else {
+        setState(
+          () {
+            changeInfoString('\n\n\nFinding devices again...\n\n');
+            context.loaderOverlay.show();
+            bluetooth.devices.clear();
+            buttonWidgets.clear();
+
+            bluetooth.frbScan();
+            Future.delayed(const Duration(seconds: 4), () {
+              setState(() {
+                bluetooth.fbrEndScan();
+              });
+              context.loaderOverlay.hide();
+              buttonWidgets = createButtonList();
+            });
+          },
+        );
+      }
+    });
+  }
+
   changeButtonText(String str) {
     setState(() {
       associatedButtonText = str;
     });
   }
 
-  List<Widget> createButtonList(int buttonCount, int associatedCount) {
+  List<Widget> createButtonList() {
     if (hasBluetoothEnabled) {
       for (int i = 0; i < associatedDevices.length; i++) {
         associatedDevicesIds.add(associatedDevices.elementAt(i).id);
@@ -97,28 +140,21 @@ class _DevicePage extends State<DevicePage> {
           });
           return List.empty(growable: true);
         } else {
-          List<Widget> buttonWidgets = List.filled(
-            associatedCount,
-            ButtonRow(
-              bluetooth: bluetooth,
-              device: associatedDevices.elementAt(0),
-              infoString: changeInfoString,
-              associatedDevices: associatedDevices,
-            ),
-            growable: true,
-          );
+          List<Widget> buttonWidgets = List.empty(growable: true);
 
           for (int i = 0; i < associatedDevices.length; i++) {
-            if (kDebugMode) {
-              print('device $i: ${associatedDevices[i]}');
+            if (bluetooth.devices.contains(associatedDevices.elementAt(i))) {
+              if (kDebugMode) {
+                print('device $i: ${associatedDevices[i]}');
+              }
+              setState(() {
+                buttonWidgets.add(ButtonRow(
+                    device: associatedDevices.elementAt(i),
+                    bluetooth: bluetooth,
+                    infoString: changeInfoString,
+                    associatedDevices: associatedDevices));
+              });
             }
-            setState(() {
-              buttonWidgets[i] = ButtonRow(
-                  device: associatedDevices.elementAt(i),
-                  bluetooth: bluetooth,
-                  infoString: changeInfoString,
-                  associatedDevices: associatedDevices);
-            });
           }
           return buttonWidgets;
         }
@@ -159,16 +195,13 @@ class _DevicePage extends State<DevicePage> {
     }
   }
 
-  List<Widget> changeFromAssociated(int buttonCount, int associatedCount) {
-    return createButtonList(buttonCount, associatedCount);
+  List<Widget> changeFromAssociated() {
+    return createButtonList();
   }
 
   @override
   Widget build(BuildContext context) {
-    int buttonCount = bluetooth.devices.length;
-
-    List<Widget> buttonWidgets =
-        createButtonList(buttonCount, associatedDevices.length);
+    buttonWidgets = createButtonList();
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
@@ -224,8 +257,7 @@ class _DevicePage extends State<DevicePage> {
                         }
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        buttonWidgets = changeFromAssociated(
-                            bluetooth.devices.length, associatedDevices.length);
+                        buttonWidgets = changeFromAssociated();
                         if (kDebugMode) {
                           print('isOnAssociated: $isOnAssociated');
                         }
@@ -295,16 +327,14 @@ class _DevicePage extends State<DevicePage> {
                             context.loaderOverlay.show();
                             bluetooth.devices.clear();
                             buttonWidgets.clear();
-                            buttonCount = 0;
+
                             bluetooth.frbScan();
                             Future.delayed(const Duration(seconds: 4), () {
                               setState(() {
                                 bluetooth.fbrEndScan();
-                                buttonCount = bluetooth.devices.length;
                               });
                               context.loaderOverlay.hide();
-                              buttonWidgets = createButtonList(
-                                  buttonCount, associatedDevices.length);
+                              buttonWidgets = createButtonList();
                             });
                           },
                         );
