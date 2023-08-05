@@ -31,6 +31,7 @@ class _DevicePage extends State<DevicePage> {
       List<DiscoveredDevice>.empty(growable: true);
 
   List<String> associatedDevicesIds = List<String>.empty(growable: true);
+  List<String> devicesIds = List<String>.empty(growable: true);
 
   @override
   void initState() {
@@ -128,11 +129,19 @@ class _DevicePage extends State<DevicePage> {
     });
   }
 
+  updateIdStrings() {
+    for (int i = 0; i < bluetooth.devices.length; i++) {
+      devicesIds.add(bluetooth.devices.elementAt(i).id);
+    }
+
+    for (int i = 0; i < associatedDevices.length; i++) {
+      associatedDevicesIds.add(associatedDevices.elementAt(i).id);
+    }
+  }
+
   List<Widget> createButtonList() {
     if (hasBluetoothEnabled) {
-      for (int i = 0; i < associatedDevices.length; i++) {
-        associatedDevicesIds.add(associatedDevices.elementAt(i).id);
-      }
+      updateIdStrings();
       if (isOnAssociated) {
         if (associatedDevices.isEmpty) {
           setState(() {
@@ -143,7 +152,7 @@ class _DevicePage extends State<DevicePage> {
           List<Widget> buttonWidgets = List.empty(growable: true);
 
           for (int i = 0; i < associatedDevices.length; i++) {
-            if (bluetooth.devices.contains(associatedDevices.elementAt(i))) {
+            if (devicesIds.contains(associatedDevices.elementAt(i).id)) {
               if (kDebugMode) {
                 print('device $i: ${associatedDevices[i]}');
               }
@@ -291,7 +300,6 @@ class _DevicePage extends State<DevicePage> {
                       textAlign: TextAlign.center,
                       style: const TextStyle(
                         fontSize: 18.0,
-                        //backgroundColor: Colors.blue,
                       ),
                     ),
                   ),
@@ -322,8 +330,6 @@ class _DevicePage extends State<DevicePage> {
                       } else {
                         setState(
                           () {
-                            changeInfoString(
-                                '\n\n\nFinding devices again...\n\n');
                             context.loaderOverlay.show();
                             bluetooth.devices.clear();
                             buttonWidgets.clear();

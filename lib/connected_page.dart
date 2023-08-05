@@ -159,7 +159,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n\n');
+                info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n');
                 infoText = '\n\n\nConnected to ${widget.device.name}\n';
               });
             }
