@@ -61,5 +61,6 @@
         "xcconfig",
         "xcodeproj",
         "xcworkspace"
-    ]
+    ],
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
