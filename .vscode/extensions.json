@@ -8,6 +8,7 @@
         "firefox-devtools.vscode-firefox-debug",
         "dart-code.dart-code",
         "streetsidesoftware.code-spell-checker",
-        "yzhang.markdown-all-in-one"
+        "yzhang.markdown-all-in-one",
+        "davidanson.vscode-markdownlint"
     ]
 }
