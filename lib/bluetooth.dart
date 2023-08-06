@@ -54,16 +54,7 @@ class Bluetooth {
       ).listen((device) {
         if (device.name.isNotEmpty) {
           int index = 0;
-          if (kDebugMode) {
-            print('scanned device: $device');
-            print('${device.serviceUuids}');
-          }
           while (index != device.serviceUuids.length) {
-            if (hrmUuid == device.serviceUuids.elementAt(index)) {
-              if (kDebugMode) {
-                print('hrmUuid == ${device.serviceUuids.elementAt(index)}');
-              }
-            }
             index++;
           }
 
@@ -80,22 +71,7 @@ class Bluetooth {
           print('the scan failed because of: $error');
           print('error stack: $stack');
         }
-        if (error.toString().contains('code 3')) {
-          if (kDebugMode) {
-            print('Location Permission missing');
-          }
-        }
-
-        if (error.toString().contains('code 1')) {
-          if (kDebugMode) {
-            print('Bluetooth is disabled');
-          }
-        }
       });
-    } else {
-      if (kDebugMode) {
-        print('did not scan');
-      }
     }
   }
 
@@ -110,9 +86,6 @@ class Bluetooth {
     }
 
     deviceConnection?.cancel();
-    if (kDebugMode) {
-      print('going into device connection');
-    }
     deviceConnection = flutterReactiveBle
         .connectToDevice(
             id: device.id, connectionTimeout: const Duration(seconds: 4))

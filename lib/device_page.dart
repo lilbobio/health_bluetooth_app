@@ -261,15 +261,9 @@ class _DevicePage extends State<DevicePage> {
                         textStyle: const TextStyle(fontSize: 20)),
                     onPressed: () {
                       setState(() {
-                        if (kDebugMode) {
-                          print('isOnAssociated: $isOnAssociated');
-                        }
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
                         buttonWidgets = changeFromAssociated();
-                        if (kDebugMode) {
-                          print('isOnAssociated: $isOnAssociated');
-                        }
                         if (isOnAssociated) {
                           setState(() {
                             if (associatedDevices.isEmpty) {

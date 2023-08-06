@@ -234,9 +234,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
       return values.elementAt(1);
     } else {
       //U16
-      if (kDebugMode) {
-        print('in else');
-      }
       ByteBuffer buffer = Uint8List.fromList(values.sublist(1, 3)).buffer;
       ByteData heartRateBuffer = ByteData.view(buffer);
       int heartRate = heartRateBuffer.getUint16(0, Endian.little);
