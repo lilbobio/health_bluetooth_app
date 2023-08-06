@@ -168,12 +168,57 @@ class _ConnectedPageState extends State<ConnectedPage> {
               print(error);
             }
           });
+        } else if (serviceUUIDString
+                .compareTo(bluetooth.bloodPressureUUIDString) ==
+            0) {
+          final characteristic = QualifiedCharacteristic(
+              characteristicId:
+                  service.characteristics.elementAt(0).characteristicId,
+              serviceId: service.serviceId,
+              deviceId: device.id);
+          bluetooth.flutterReactiveBle
+              .subscribeToCharacteristic(characteristic)
+              .listen((data) {
+            if (kDebugMode) {
+              print(data);
+            }
+            if (mounted) {
+              setState(() {
+                info('Blood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
+                infoText = '\n\n\nConnected to ${widget.device.name}\n';
+              });
+            }
+          }, onError: (dynamic error) {
+            if (kDebugMode) {
+              print(error);
+            }
+          });
+        } else if (serviceUUIDString.compareTo(bluetooth.scaleUUIDString) ==
+            0) {
+          final characteristic = QualifiedCharacteristic(
+              characteristicId:
+                  service.characteristics.elementAt(0).characteristicId,
+              serviceId: service.serviceId,
+              deviceId: device.id);
+          bluetooth.flutterReactiveBle
+              .subscribeToCharacteristic(characteristic)
+              .listen((data) {
+            if (kDebugMode) {
+              print(data);
+            }
+            if (mounted) {
+              setState(() {
+                info('Weight is: \n\n ${findWeight(data)}\n\n\n');
+                infoText = '\n\n\nConnected to ${widget.device.name}';
+              });
+            }
+          });
         }
       }
     });
   }
 
-  int findWeight(List<int> values, List<String> flagsArray) {
+  int findWeight(List<int> values) {
     int weightPart1 = values[1];
     String weightP1Str = weightPart1.toRadixString(2);
     List<String> weightP1Array = weightP1Str.split("");
@@ -202,13 +247,9 @@ class _ConnectedPageState extends State<ConnectedPage> {
   }
 
   //TODO: Finish this function
-  int findBloodPressure(List<int> values, List<String> flagsArray) {
+  int findBloodPressure(List<int> values) {
     if (values.isEmpty) {
       return 0;
-    }
-
-    while (flagsArray.length < 4) {
-      flagsArray.insert(0, "0");
     }
 
     return 0;
