@@ -19,6 +19,7 @@ This App was created by Dominic Oaldon with help from Doug Horner.
 
 ### Device Select page
 
+![alt text][bluetoothIsDisabled]
 ![alt text][AssociatedPageEmpty]
 ![alt text][deviceSelectPage]
 ![alt text][loadingScreen2]
@@ -35,3 +36,4 @@ This App was created by Dominic Oaldon with help from Doug Horner.
 [connectedPage]: assets/images/Cconnected_page.jpg "connected page"
 [AssociatedPageEmpty]: assets/images/Assocaited_Page.jpg "Empty Associated Page"
 [AssociatedPage]: assets/images/Associated_Page2.jpg "Associated Page After Connection"
+[bluetoothIsDisabled]: assets/images/Bluetooth_is_disabled.jpg "Shows when Device has bluetooth disabled"
