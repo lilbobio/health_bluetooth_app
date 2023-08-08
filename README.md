@@ -11,6 +11,25 @@ The app will have a button to connect to the bluetooth device and you have to sp
 
 This App was created by Dominic Oaldon with help from Doug Horner.
 
+## Building
+
+Install flutter
+On PC: https://docs.flutter.dev/get-started/install/windows
+On Mac: https://docs.flutter.dev/get-started/install/macos
+
+### Android
+
+```
+steps here
+```
+
+### Mac
+
+Install dependancies (cocapods, xcode)
+```
+flutter run
+```
+
 ## Notes
 
 [Google Drive Link](https://docs.google.com/document/d/1tMROo_rObtT972zS42XL3zOv_wVSsJWuNO4OBSkATlc/edit?pli=1)
