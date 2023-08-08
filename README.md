@@ -14,13 +14,16 @@ This App was created by Dominic Oaldon with help from Doug Horner.
 ## Building
 
 Install flutter
+
 On PC: <https://docs.flutter.dev/get-started/install/windows>
+
 On Mac: <https://docs.flutter.dev/get-started/install/macos>
 
 ### Android
 
 ```bash
-steps here
+flutter analyze
+flutter run lib/main.dart
 ```
 
 ### Mac
@@ -28,7 +31,8 @@ steps here
 Install dependencies (cocapods, xcode)
 
 ```bash
-flutter run
+flutter analyze
+flutter run lib/main.dart
 ```
 
 ## Notes
