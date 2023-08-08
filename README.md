@@ -39,6 +39,10 @@ flutter run lib/main.dart
 
 [Google Drive Link](https://docs.google.com/document/d/1tMROo_rObtT972zS42XL3zOv_wVSsJWuNO4OBSkATlc/edit?pli=1)
 
+## Video Of App
+
+[Video Link](https://www.youtube.com/shorts/dOg5BTFkDEM)
+
 ## Screenshots
 
 ### Device Select page
