@@ -184,7 +184,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Blood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
+                info(
+                    'Blood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
                 infoText = '\n\n\nConnected to ${widget.device.name}\n';
               });
             }
@@ -218,41 +219,87 @@ class _ConnectedPageState extends State<ConnectedPage> {
     });
   }
 
-  int findWeight(List<int> values) {
-    int weightPart1 = values[1];
-    String weightP1Str = weightPart1.toRadixString(2);
-    List<String> weightP1Array = weightP1Str.split("");
+  //this function is untested due to lack of equipment 
 
-    int weightPart2 = values[2];
-    String weightP2Str = weightPart2.toRadixString(2);
-    List<String> weightP2Array = weightP2Str.split("");
+  String findWeight(List<int> values) {
+    String returnStr = '0 Lbs';
 
-    while (weightP2Array.length < 16) {
-      weightP1Array.insert(0, "0");
-      weightP2Array.insert(0, "0");
+    if (values.isEmpty) {
+      return returnStr;
     }
 
-    List<int> weightList = List<int>.filled(32, 0);
-    for (int i = 0; i < 16; i++) {
-      weightList[i] = int.parse(weightP1Array[i]);
-    }
-    for (int i = 0; i < 16; i++) {
-      weightList[i + 16] = int.parse(weightP2Array[i]);
+    int flags = values[0];
+    String flagStr = flags.toRadixString(2);
+
+    List<String> flagsArray = flagStr.split("");
+    while (flagsArray.length < 8) {
+      flagsArray.insert(0, "0");
     }
 
-    ByteBuffer buffer = Uint32List.fromList(weightList).buffer;
-    ByteData weightBuffer = ByteData.view(buffer);
-    int weight = weightBuffer.getInt32(0, Endian.little);
-    return weight;
+    if (values.length >= 3) {
+      int weightPart1 = values[1];
+      String weightP1Str = weightPart1.toRadixString(2);
+      List<String> weightP1Array = weightP1Str.split("");
+
+      int weightPart2 = values[2];
+      String weightP2Str = weightPart2.toRadixString(2);
+      List<String> weightP2Array = weightP2Str.split("");
+
+      while (weightP2Array.length < 16) {
+        weightP1Array.insert(0, "0");
+        weightP2Array.insert(0, "0");
+      }
+
+      List<int> weightList = List<int>.filled(32, 0);
+      for (int i = 0; i < 16; i++) {
+        weightList[i] = int.parse(weightP1Array[i]);
+      }
+      for (int i = 0; i < 16; i++) {
+        weightList[i + 16] = int.parse(weightP2Array[i]);
+      }
+
+      ByteBuffer buffer = Uint32List.fromList(weightList).buffer;
+      ByteData weightBuffer = ByteData.view(buffer);
+      int weight = weightBuffer.getInt32(0, Endian.little);
+
+      if (flagsArray[0] == "0") {
+        returnStr = '$weight KGs';
+      } else {
+        returnStr = '$weight lbs';
+      }
+    }
+
+    return returnStr;
   }
 
-  //TODO: Finish this function
-  int findBloodPressure(List<int> values) {
+  //this function is untested due to lack of equipment 
+  String findBloodPressure(List<int> values) {
     if (values.isEmpty) {
-      return 0;
+      return "0 kPa";
     }
 
-    return 0;
+    String returnStr = '0 kPa';
+
+    int flags = values[0];
+    String flagStr = flags.toRadixString(2);
+
+    List<String> flagsArray = flagStr.split("");
+    while (flagsArray.length < 8) {
+      flagsArray.insert(0, "0");
+    }
+
+    if (values.length >= 3) {
+      ByteBuffer buffer = Uint8List.fromList(values.sublist(1, 3)).buffer;
+      ByteData bloodPressureBuffer = ByteData.view(buffer);
+      int bloodPressure = bloodPressureBuffer.getInt16(0, Endian.little);
+
+      if (flagsArray[0] == "0") {
+        returnStr = '$bloodPressure mmHg';
+      } else {
+        returnStr = '$bloodPressure kPa';
+      }
+    }
+    return returnStr;
   }
 
   //function derived from https://stackoverflow.com/questions/65443033/heart-rate-value-in-ble
