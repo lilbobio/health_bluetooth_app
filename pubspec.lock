@@ -134,22 +134,6 @@ packages:
     description: flutter
     source: sdk
     version: "0.0.0"
-  flutter_blue:
-    dependency: "direct main"
-    description:
-      name: flutter_blue
-      sha256: f7f76b9b80455b0375693ec96c276fadb01e94d8441fa1740a64980cd1aeda5c
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.8.0"
-  flutter_blue_plus:
-    dependency: "direct main"
-    description:
-      name: flutter_blue_plus
-      sha256: "810351799eaf51c08152737615c345e9eb83e13b20adcd91ec0c78cd59dc260d"
-      url: "https://pub.dev"
-    source: hosted
-    version: "1.12.13"
   flutter_launcher_icons:
     dependency: "direct dev"
     description:
@@ -347,14 +331,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "5.1.1"
-  rxdart:
-    dependency: transitive
-    description:
-      name: rxdart
-      sha256: "2ef8b4e91cb3b55d155e0e34eeae0ac7107974e451495c955ac04ddee8cc21fd"
-      url: "https://pub.dev"
-    source: hosted
-    version: "0.26.0"
   sky_engine:
     dependency: transitive
     description: flutter
