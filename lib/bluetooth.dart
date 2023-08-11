@@ -83,6 +83,27 @@ class Bluetooth {
     subscription = null;
   }
 
+  connectWithAdvertising(DiscoveredDevice device) {
+    if (kDebugMode) {
+      print('about to advertise and connect to device');
+    }
+
+    deviceConnection?.cancel();
+    deviceConnection = flutterReactiveBle
+        .connectToAdvertisingDevice(
+            id: device.id,
+            withServices: [],
+            prescanDuration: const Duration(seconds: 5))
+        .listen((update) {
+      if (update.connectionState == DeviceConnectionState.connected) {
+        isConnected = true;
+        if (kDebugMode) {
+          print('connected to device');
+        }
+      }
+    });
+  }
+
   connect(DiscoveredDevice device) {
     if (kDebugMode) {
       print("about to connect to $device");
