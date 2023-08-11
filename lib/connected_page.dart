@@ -228,13 +228,14 @@ class _ConnectedPageState extends State<ConnectedPage> {
           bluetooth.flutterReactiveBle
               .subscribeToCharacteristic(weightScaleMeasurement)
               .listen((data) async {
-            final weightScaleMeasurementResponse = await bluetooth
-                .flutterReactiveBle
-                .readCharacteristic(weightScaleMeasurement);
-
             if (kDebugMode) {
-              print(
-                  'Weight Scale Measurement: $weightScaleMeasurementResponse');
+              print('Data: $data');
+            }
+            if (mounted) {
+              setState(() {
+                info('Weight is: \n\n ${findWeight(data)}\n\n\n');
+                infoText = '\n\n\nConnected to ${widget.device.name}';
+              });
             }
           }, onError: (dynamic error) {
             if (kDebugMode) {
@@ -295,7 +296,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   //this function is untested due to lack of equipment
 
   String findWeight(List<int> values) {
-    String returnStr = '0 Lbs';
+    String returnStr = '0 lbs';
 
     if (values.isEmpty) {
       return returnStr;
@@ -306,7 +307,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
     List<String> flagsArray = flagStr.split("");
     while (flagsArray.length < 8) {
-      flagsArray.insert(0, "0");
+      flagsArray.insert(flagsArray.length - 1, "0");
     }
 
     if (values.length >= 3) {
@@ -318,25 +319,28 @@ class _ConnectedPageState extends State<ConnectedPage> {
       String weightP2Str = weightPart2.toRadixString(2);
       List<String> weightP2Array = weightP2Str.split("");
 
-      while (weightP2Array.length < 16) {
-        weightP1Array.insert(0, "0");
+      while (weightP2Array.length < 8) {
         weightP2Array.insert(0, "0");
       }
 
-      List<int> weightList = List<int>.filled(32, 0);
-      for (int i = 0; i < 16; i++) {
+      while (weightP1Array.length < 8) {
+        weightP1Array.insert(0, "0");
+      }
+
+      List<int> weightList = List<int>.filled(8, 0);
+      for (int i = 0; i < 8; i++) {
         weightList[i] = int.parse(weightP1Array[i]);
       }
-      for (int i = 0; i < 16; i++) {
-        weightList[i + 16] = int.parse(weightP2Array[i]);
+      for (int i = 0; i < 8; i++) {
+        weightList[i + 8] = int.parse(weightP2Array[i]);
       }
 
-      ByteBuffer buffer = Uint32List.fromList(weightList).buffer;
+      ByteBuffer buffer = Uint16List.fromList(weightList).buffer;
       ByteData weightBuffer = ByteData.view(buffer);
-      int weight = weightBuffer.getInt32(0, Endian.little);
+      int weight = weightBuffer.getInt16(0, Endian.little);
 
       if (flagsArray[0] == "0") {
-        returnStr = '$weight KGs';
+        returnStr = '$weight Kgs';
       } else {
         returnStr = '$weight lbs';
       }
