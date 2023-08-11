@@ -34,46 +34,46 @@ class _DevicePage extends State<DevicePage> {
   List<String> devicesIds = List<String>.empty(growable: true);
 
   @override
-  void initState() {
-    super.initState();
-    Permissions permissions = Permissions();
+  // void initState() {
+  //   super.initState();
+  //   Permissions permissions = Permissions();
 
-    permissions.hasBluetooth().then((hasBluetooth) {
-      if (hasBluetooth) {
-        hasBluetoothEnabled = true;
-        setState(() {
-          context.loaderOverlay.show();
-          changeInfoString('\n\n\nScanning for devices...\n\n');
-          bluetooth.frbScan();
-          Future.delayed(const Duration(seconds: 4), () {
-            bluetooth.fbrEndScan();
-            context.loaderOverlay.hide();
-            if (bluetooth.devices.isEmpty) {
-              setState(() {
-                changeInfoString('\n\n\nFound 0 Relevant Devices\n\n');
-              });
-            } else {
-              setState(() {
-                changeInfoString(
-                    '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DevicePage(title: widget.title),
-                  ),
-                ).then(onGoBack);
-              });
-            }
-          });
-        });
-      } else {
-        hasBluetoothEnabled = false;
-        setState(() {
-          changeInfoString('\n\n\nBluetooth Disabled\n\n');
-        });
-      }
-    });
-  }
+  //   permissions.hasBluetooth().then((hasBluetooth) {
+  //     if (hasBluetooth) {
+  //       hasBluetoothEnabled = true;
+  //       setState(() {
+  //         context.loaderOverlay.show();
+  //         changeInfoString('\n\n\nScanning for devices...\n\n');
+  //         bluetooth.frbScan();
+  //         Future.delayed(const Duration(seconds: 4), () {
+  //           bluetooth.fbrEndScan();
+  //           context.loaderOverlay.hide();
+  //           if (bluetooth.devices.isEmpty) {
+  //             setState(() {
+  //               changeInfoString('\n\n\nFound 0 Relevant Devices\n\n');
+  //             });
+  //           } else {
+  //             setState(() {
+  //               changeInfoString(
+  //                   '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
+  //               Navigator.push(
+  //                 context,
+  //                 MaterialPageRoute(
+  //                   builder: (context) => DevicePage(title: widget.title),
+  //                 ),
+  //               ).then(onGoBack);
+  //             });
+  //           }
+  //         });
+  //       });
+  //     } else {
+  //       hasBluetoothEnabled = false;
+  //       setState(() {
+  //         changeInfoString('\n\n\nBluetooth Disabled\n\n');
+  //       });
+  //     }
+  //   });
+  // }
 
   changeInfoString(String str) {
     setState(() {

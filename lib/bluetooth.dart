@@ -11,9 +11,11 @@ class Bluetooth {
   final String heartRateMonitorUUIDString = '180d';
   final String scaleUUIDString = '181d';
   final String bloodPressureUUIDString = '1810';
+  final String dateTimeUUIDString = '2A08';
   final Uuid hrmUuid = Uuid.parse('180D');
   final Uuid scaleUuid = Uuid.parse('181D');
   final Uuid bloodPressureUuid = Uuid.parse('1810');
+  final Uuid dateTimeUuid = Uuid.parse('2A08');
   bool isConnected = false;
   // ignore: avoid_init_to_null
   bool? isConnectable = null;
@@ -49,7 +51,8 @@ class Bluetooth {
         print('is scanning');
       }
       subscription = flutterReactiveBle.scanForDevices(
-        withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
+        //withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
+        withServices: [],
         scanMode: ScanMode.balanced,
       ).listen((device) {
         if (device.name.isNotEmpty) {
@@ -88,7 +91,8 @@ class Bluetooth {
     deviceConnection?.cancel();
     deviceConnection = flutterReactiveBle
         .connectToDevice(
-            id: device.id, connectionTimeout: const Duration(seconds: 4))
+      id: device.id,
+    ) //connectionTimeout: const Duration())
         .listen((update) {
       if (update.connectionState == DeviceConnectionState.connected) {
         isConnected = true;

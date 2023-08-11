@@ -214,12 +214,85 @@ class _ConnectedPageState extends State<ConnectedPage> {
               });
             }
           });
+        } else if (serviceUUIDString.compareTo('4100') == 0) {
+          if (kDebugMode) {
+            print('in Weight Scale Service: 0x4100');
+            print('service: $service');
+          }
+
+          final weightScaleMeasurement = QualifiedCharacteristic(
+              characteristicId: service.characteristicIds.first,
+              serviceId: service.serviceId,
+              deviceId: device.id);
+
+          bluetooth.flutterReactiveBle
+              .subscribeToCharacteristic(weightScaleMeasurement)
+              .listen((data) async {
+            final weightScaleMeasurementResponse = await bluetooth
+                .flutterReactiveBle
+                .readCharacteristic(weightScaleMeasurement);
+
+            if (kDebugMode) {
+              print(
+                  'Weight Scale Measurement: $weightScaleMeasurementResponse');
+            }
+          }, onError: (dynamic error) {
+            if (kDebugMode) {
+              print('$error');
+            }
+          });
+
+          final weightScaleFeature = QualifiedCharacteristic(
+              characteristicId: service.characteristicIds.elementAt(1),
+              serviceId: service.serviceId,
+              deviceId: device.id);
+
+          final weightScaleFeatureResponse = await bluetooth.flutterReactiveBle
+              .readCharacteristic(weightScaleFeature);
+
+          if (kDebugMode) {
+            print('Weight scale feature: $weightScaleFeatureResponse');
+          }
+
+          final dateTime = QualifiedCharacteristic(
+              characteristicId: service.characteristics.last.characteristicId,
+              serviceId: service.serviceId,
+              deviceId: device.id);
+
+          final responseBefore =
+              await bluetooth.flutterReactiveBle.readCharacteristic(dateTime);
+
+          if (kDebugMode) {
+            print('before write: $responseBefore');
+          }
+
+          await bluetooth.flutterReactiveBle.writeCharacteristicWithResponse(
+              dateTime,
+              value: [0x07, 0xD0, 0x01, 0x01, 0x00, 0x00, 0x00]);
+
+          final response =
+              await bluetooth.flutterReactiveBle.readCharacteristic(dateTime);
+          if (kDebugMode) {
+            print('after write: $response');
+          }
+        } else if (serviceUUIDString.compareTo('4101') == 0) {
+          if (kDebugMode) {
+            print('in Weight Scale Measurement: 4101');
+          }
+        } else if (serviceUUIDString.compareTo('4102') == 0) {
+          if (kDebugMode) {
+            print('in Weight Scale Feature');
+          }
+        } else {
+          if (kDebugMode) {
+            print('service: $service');
+          }
         }
       }
     });
   }
 
-  //this function is untested due to lack of equipment 
+  //this function is untested due to lack of equipment
 
   String findWeight(List<int> values) {
     String returnStr = '0 Lbs';
@@ -272,7 +345,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
     return returnStr;
   }
 
-  //this function is untested due to lack of equipment 
+  //this function is untested due to lack of equipment
   String findBloodPressure(List<int> values) {
     if (values.isEmpty) {
       return "0 kPa";
