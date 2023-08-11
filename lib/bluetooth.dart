@@ -101,6 +101,13 @@ class Bluetooth {
           print('connected to device');
         }
       }
+      
+      if (update.connectionState == DeviceConnectionState.disconnected) {
+        if (kDebugMode) {
+          print('timed out');
+        }
+        isConnected = false;
+      }
     });
   }
 
