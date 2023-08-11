@@ -335,9 +335,17 @@ class _ConnectedPageState extends State<ConnectedPage> {
         weightList[i + 8] = int.parse(weightP2Array[i]);
       }
 
+      if (kDebugMode) {
+        print('weight list is: $weightList');
+      }
+
       ByteBuffer buffer = Uint16List.fromList(weightList).buffer;
       ByteData weightBuffer = ByteData.view(buffer);
       int weight = weightBuffer.getInt16(0, Endian.little);
+
+      if (kDebugMode) {
+        print('weight is $weight');
+      }
 
       if (flagsArray[7] == "0") {
         returnStr = '$weight Kgs';
