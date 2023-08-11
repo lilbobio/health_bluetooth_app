@@ -158,10 +158,12 @@ class _DevicePage extends State<DevicePage> {
               }
               setState(() {
                 buttonWidgets.add(ButtonRow(
-                    device: associatedDevices.elementAt(i),
-                    bluetooth: bluetooth,
-                    infoString: changeInfoString,
-                    associatedDevices: associatedDevices));
+                  device: associatedDevices.elementAt(i),
+                  bluetooth: bluetooth,
+                  infoString: changeInfoString,
+                  associatedDevices: associatedDevices,
+                  isAssociated: isOnAssociated,
+                ));
               });
             }
           }
@@ -189,6 +191,7 @@ class _DevicePage extends State<DevicePage> {
                   device: bluetooth.devices.elementAt(i),
                   infoString: changeInfoString,
                   associatedDevices: associatedDevices,
+                  isAssociated: isOnAssociated,
                 ));
               });
             }

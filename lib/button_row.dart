@@ -11,11 +11,13 @@ class ButtonRow extends StatefulWidget {
       required this.device,
       required this.bluetooth,
       required this.infoString,
-      required this.associatedDevices});
+      required this.associatedDevices,
+      required this.isAssociated});
   final DiscoveredDevice device;
   final Bluetooth bluetooth;
   final Function(String str) infoString;
   final List<DiscoveredDevice> associatedDevices;
+  final bool isAssociated;
 
   @override
   State<StatefulWidget> createState() => _ButtonRow();
@@ -51,12 +53,19 @@ class _ButtonRow extends State<ButtonRow> {
   }
 
   deviceConnectButtonPressed(DiscoveredDevice device) {
-    setState(() {
-      widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
-      context.loaderOverlay.show();
-      widget.bluetooth.connect(device);
-    });
-
+    if (widget.isAssociated) {
+      setState(() {
+        widget.infoString('\n\n\nadvertised connecting to ${device.name}...\n\n\n');
+        context.loaderOverlay.show();
+        widget.bluetooth.connectWithAdvertising(device);
+      });
+    } else {
+      setState(() {
+        widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
+        context.loaderOverlay.show();
+        widget.bluetooth.connect(device);
+      });
+    }
     setState(() {
       if (!widget.associatedDevices.contains(device)) {
         widget.associatedDevices.add(device);
