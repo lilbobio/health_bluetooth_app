@@ -307,7 +307,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
     List<String> flagsArray = flagStr.split("");
     while (flagsArray.length < 8) {
-      flagsArray.insert(flagsArray.length - 1, "0");
+      flagsArray.insert(0, "0");
     }
 
     if (values.length >= 3) {
@@ -327,7 +327,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         weightP1Array.insert(0, "0");
       }
 
-      List<int> weightList = List<int>.filled(8, 0);
+      List<int> weightList = List<int>.filled(16, 0);
       for (int i = 0; i < 8; i++) {
         weightList[i] = int.parse(weightP1Array[i]);
       }
@@ -339,7 +339,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
       ByteData weightBuffer = ByteData.view(buffer);
       int weight = weightBuffer.getInt16(0, Endian.little);
 
-      if (flagsArray[0] == "0") {
+      if (flagsArray[7] == "0") {
         returnStr = '$weight Kgs';
       } else {
         returnStr = '$weight lbs';
