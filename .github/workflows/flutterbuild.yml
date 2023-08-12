@@ -21,12 +21,9 @@ jobs:
        with:
          flutter-version: '3.7.7'
          channel: 'stable'
-     - run: flutter config --enable-windows-desktop
+     # - run: flutter config --enable-windows-desktop
      - run: flutter upgrade
-     # - run: flutter build windows
-     # - run: flutter upgrade
      - run: flutter pub get
-#      - run: flutter test
      - run: flutter build apk
      - run: flutter build appbundle
      
