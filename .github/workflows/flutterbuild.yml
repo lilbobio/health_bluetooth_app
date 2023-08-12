@@ -20,7 +20,7 @@ jobs:
      - uses: subosito/flutter-action@v2
        with:
          flutter-version: '3.7.7'
-         channel: 'beta'
+         channel: 'stable'
      - run: flutter config --enable-windows-desktop
      - run: flutter build windows
      - run: flutter pub get
