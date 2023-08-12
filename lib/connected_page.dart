@@ -82,6 +82,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
               ),
             ),
 
+            //save value button
             Align(
               alignment: Alignment.bottomCenter,
               child: ElevatedButton(
@@ -99,6 +100,23 @@ class _ConnectedPageState extends State<ConnectedPage> {
                     fontSize: 18.0,
                   ),
                 ),
+              ),
+            ),
+
+            //get scale weight button
+            //TODO: finish this function
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: FloatingActionButton(
+                onPressed: () {
+                  setState(() {
+                    if (kDebugMode) {
+                      print('implement this button ');
+                    }
+                  });
+                },
+                heroTag: null,
+                child: const Icon(Icons.add),
               ),
             ),
 
