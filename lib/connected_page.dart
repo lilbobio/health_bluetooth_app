@@ -27,6 +27,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
   String servicesText = '\n\nConnecting to Device...\n\n\n';
   String infoText = '';
   late Timer everySecond;
+  bool isFirstConnect = true;
+
   changeInfoString(String str) {
     setState(() {
       servicesText = str;
@@ -40,11 +42,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
     context.loaderOverlay.show();
     Future.delayed(const Duration(seconds: 4), () {
       context.loaderOverlay.hide();
-      if (widget.bluetooth.isConnected) {
+      if (widget.bluetooth.isConnected && !widget.device.name.contains('A&D')) {
         findServices(widget.device, widget.bluetooth, changeInfoString);
-      } else {
+      } else if (!widget.bluetooth.isConnected) {
         widget.bluetooth.disconnect();
         Navigator.pop(context, true);
+      } else {
+        setState(() {
+          infoText = 'Press the \'+\' button to pair device';
+          changeInfoString('Press the \'+\' button to pair device');
+        });
       }
     });
   }
@@ -82,6 +89,35 @@ class _ConnectedPageState extends State<ConnectedPage> {
               ),
             ),
 
+            //get scale weight button
+            //TODO: finish this function
+            if (widget.device.name.contains('A&D'))
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: FloatingActionButton(
+                  onPressed: () {
+                    setState(() {
+                      if (kDebugMode) {
+                        print('implement this button ');
+                      }
+
+                      if (isFirstConnect) {
+                        context.loaderOverlay.show();
+                        isFirstConnect = false;
+                        addButton();
+                        context.loaderOverlay.hide;
+                      } else {
+                        context.loaderOverlay.show();
+                        getWeight();
+                        context.loaderOverlay.hide();
+                      }
+                    });
+                  },
+                  heroTag: null,
+                  child: const Icon(Icons.add),
+                ),
+              ),
+
             //save value button
             Align(
               alignment: Alignment.bottomCenter,
@@ -100,23 +136,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
                     fontSize: 18.0,
                   ),
                 ),
-              ),
-            ),
-
-            //get scale weight button
-            //TODO: finish this function
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: FloatingActionButton(
-                onPressed: () {
-                  setState(() {
-                    if (kDebugMode) {
-                      print('implement this button ');
-                    }
-                  });
-                },
-                heroTag: null,
-                child: const Icon(Icons.add),
               ),
             ),
 
@@ -145,6 +164,51 @@ class _ConnectedPageState extends State<ConnectedPage> {
         ),
       ),
     );
+  }
+
+  getWeight() {
+    findServices(widget.device, widget.bluetooth, changeInfoString);
+  }
+
+  addButton() {
+    widget.bluetooth.findServices(widget.device.id).then((services) async {
+      for (DiscoveredService service in services!) {
+        String serviceUUIDString = service.serviceId.toString().substring(4, 8);
+
+        if (serviceUUIDString.compareTo('4100') == 0) {
+          if (kDebugMode) {
+            print('in Weight Scale Service: 0x4100');
+            print('service: $service');
+          }
+
+          final dateTime = QualifiedCharacteristic(
+              characteristicId: service.characteristics.last.characteristicId,
+              serviceId: service.serviceId,
+              deviceId: widget.device.id);
+
+          final responseBefore = await widget.bluetooth.flutterReactiveBle
+              .readCharacteristic(dateTime);
+
+          if (kDebugMode) {
+            print('before write: $responseBefore');
+          }
+
+          await widget.bluetooth.flutterReactiveBle
+              .writeCharacteristicWithResponse(dateTime,
+                  value: [0x07, 0xD0, 0x01, 0x01, 0x00, 0x00, 0x00]);
+
+          final response = await widget.bluetooth.flutterReactiveBle
+              .readCharacteristic(dateTime);
+          if (kDebugMode) {
+            print('after write: $response');
+          }
+        }
+        widget.bluetooth.disconnect();
+        changeInfoString(
+            '\n\nDevice Paired\nStep on Scale and get weight then\n Press the \'+\' button again to record weight\n\n');
+        break;
+      }
+    });
   }
 
   findServices(
@@ -233,21 +297,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
           });
         } else if (serviceUUIDString.compareTo('4100') == 0) {
-          if (kDebugMode) {
-            print('in Weight Scale Service: 0x4100');
-            print('service: $service');
-          }
-
-          final weightScaleMeasurement = QualifiedCharacteristic(
+          final characteristic = QualifiedCharacteristic(
               characteristicId: service.characteristicIds.first,
               serviceId: service.serviceId,
               deviceId: device.id);
 
           bluetooth.flutterReactiveBle
-              .subscribeToCharacteristic(weightScaleMeasurement)
-              .listen((data) async {
+              .subscribeToCharacteristic(characteristic)
+              .listen((data) {
             if (kDebugMode) {
-              print('Data: $data');
+              print(data);
             }
             if (mounted) {
               setState(() {
@@ -255,45 +314,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 infoText = '\n\n\nConnected to ${widget.device.name}';
               });
             }
-          }, onError: (dynamic error) {
-            if (kDebugMode) {
-              print('$error');
-            }
           });
-
-          final weightScaleFeature = QualifiedCharacteristic(
-              characteristicId: service.characteristicIds.elementAt(1),
-              serviceId: service.serviceId,
-              deviceId: device.id);
-
-          final weightScaleFeatureResponse = await bluetooth.flutterReactiveBle
-              .readCharacteristic(weightScaleFeature);
-
-          if (kDebugMode) {
-            print('Weight scale feature: $weightScaleFeatureResponse');
-          }
-
-          final dateTime = QualifiedCharacteristic(
-              characteristicId: service.characteristics.last.characteristicId,
-              serviceId: service.serviceId,
-              deviceId: device.id);
-
-          final responseBefore =
-              await bluetooth.flutterReactiveBle.readCharacteristic(dateTime);
-
-          if (kDebugMode) {
-            print('before write: $responseBefore');
-          }
-
-          await bluetooth.flutterReactiveBle.writeCharacteristicWithResponse(
-              dateTime,
-              value: [0x07, 0xD0, 0x01, 0x01, 0x00, 0x00, 0x00]);
-
-          final response =
-              await bluetooth.flutterReactiveBle.readCharacteristic(dateTime);
-          if (kDebugMode) {
-            print('after write: $response');
-          }
         } else if (serviceUUIDString.compareTo('4101') == 0) {
           if (kDebugMode) {
             print('in Weight Scale Measurement: 4101');
