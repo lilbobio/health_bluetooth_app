@@ -90,7 +90,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
             ),
 
             //get scale weight button
-            //TODO: finish this function
             if (widget.device.name.contains('A&D'))
               Align(
                 alignment: Alignment.bottomCenter,
@@ -102,14 +101,16 @@ class _ConnectedPageState extends State<ConnectedPage> {
                       }
 
                       if (isFirstConnect) {
-                        context.loaderOverlay.show();
+                        if (kDebugMode) {
+                          print('in first connect');
+                        }
                         isFirstConnect = false;
                         addButton();
-                        context.loaderOverlay.hide;
                       } else {
-                        context.loaderOverlay.show();
+                        if (kDebugMode) {
+                          print('in second connect');
+                        }
                         getWeight();
-                        context.loaderOverlay.hide();
                       }
                     });
                   },
@@ -203,11 +204,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
             print('after write: $response');
           }
         }
-        widget.bluetooth.disconnect();
-        changeInfoString(
-            '\n\nDevice Paired\nStep on Scale and get weight then\n Press the \'+\' button again to record weight\n\n');
-        break;
       }
+      changeInfoString(
+          '\n\nDevice Paired\nStep on Scale and get weight then\n Press the \'+\' button again to record weight\n\n');
+      widget.bluetooth.disconnect();
     });
   }
 
