@@ -49,8 +49,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
         Navigator.pop(context, true);
       } else {
         setState(() {
-          infoText = 'Press the \'+\' button to pair device';
-          changeInfoString('Press the \'+\' button to pair device');
+          infoText = 'Press the plus button to pair device';
+          changeInfoString('Press the plus button to pair device');
         });
       }
     });
@@ -206,7 +206,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         }
       }
       changeInfoString(
-          '\n\nDevice Paired\nStep on Scale and get weight then\n Press the \'+\' button again to record weight\n\n');
+          '\n\nDevice Paired\nStep on Scale and get weight then\n Press the plus button again to record weight\n\n');
       widget.bluetooth.disconnect();
     });
   }
