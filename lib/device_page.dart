@@ -33,93 +33,12 @@ class _DevicePage extends State<DevicePage> {
   List<String> associatedDevicesIds = List<String>.empty(growable: true);
   List<String> devicesIds = List<String>.empty(growable: true);
 
-  @override
-  // void initState() {
-  //   super.initState();
-  //   Permissions permissions = Permissions();
-
-  //   permissions.hasBluetooth().then((hasBluetooth) {
-  //     if (hasBluetooth) {
-  //       hasBluetoothEnabled = true;
-  //       setState(() {
-  //         context.loaderOverlay.show();
-  //         changeInfoString('\n\n\nScanning for devices...\n\n');
-  //         bluetooth.frbScan();
-  //         Future.delayed(const Duration(seconds: 4), () {
-  //           bluetooth.fbrEndScan();
-  //           context.loaderOverlay.hide();
-  //           if (bluetooth.devices.isEmpty) {
-  //             setState(() {
-  //               changeInfoString('\n\n\nFound 0 Relevant Devices\n\n');
-  //             });
-  //           } else {
-  //             setState(() {
-  //               changeInfoString(
-  //                   '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
-  //               Navigator.push(
-  //                 context,
-  //                 MaterialPageRoute(
-  //                   builder: (context) => DevicePage(title: widget.title),
-  //                 ),
-  //               ).then(onGoBack);
-  //             });
-  //           }
-  //         });
-  //       });
-  //     } else {
-  //       hasBluetoothEnabled = false;
-  //       setState(() {
-  //         changeInfoString('\n\n\nBluetooth Disabled\n\n');
-  //       });
-  //     }
-  //   });
-  // }
-
   changeInfoString(String str) {
     setState(() {
       if (kDebugMode) {
         print('changing info string to: $str');
       }
       infoString = str;
-    });
-  }
-
-  FutureOr onGoBack(dynamic value) {
-    setState(() {
-      if (kDebugMode) {
-        print('refreshing page');
-      }
-      Permissions permissions = Permissions();
-
-      permissions.hasBluetooth().then((hasBluetooth) {
-        if (hasBluetooth) {
-          hasBluetoothEnabled = true;
-        } else {
-          hasBluetoothEnabled = false;
-        }
-      });
-
-      if (!hasBluetoothEnabled) {
-        changeInfoString('\n\n\nBluetooth Disconnected\n\n');
-      } else {
-        setState(
-          () {
-            changeInfoString('\n\n\nFinding devices again...\n\n');
-            context.loaderOverlay.show();
-            bluetooth.devices.clear();
-            buttonWidgets.clear();
-
-            bluetooth.frbScan();
-            Future.delayed(const Duration(seconds: 4), () {
-              setState(() {
-                bluetooth.fbrEndScan();
-              });
-              context.loaderOverlay.hide();
-              buttonWidgets = createButtonList();
-            });
-          },
-        );
-      }
     });
   }
 
@@ -140,6 +59,15 @@ class _DevicePage extends State<DevicePage> {
   }
 
   List<Widget> createButtonList() {
+    Permissions permissions = Permissions();
+    permissions.hasBluetooth().then((value){
+      if(value){
+        hasBluetoothEnabled = true;
+      } else {
+        hasBluetoothEnabled = false;
+      }
+    });
+
     if (hasBluetoothEnabled) {
       updateIdStrings();
       if (isOnAssociated) {

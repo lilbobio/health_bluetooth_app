@@ -16,6 +16,7 @@ class Bluetooth {
   final Uuid scaleUuid = Uuid.parse('181D');
   final Uuid bloodPressureUuid = Uuid.parse('1810');
   final Uuid dateTimeUuid = Uuid.parse('2A08');
+  final Uuid anDScaleUuid = Uuid.parse('4100');
   bool isConnected = false;
   // ignore: avoid_init_to_null
   bool? isConnectable = null;
@@ -51,7 +52,13 @@ class Bluetooth {
         print('is scanning');
       }
       subscription = flutterReactiveBle.scanForDevices(
-        //withServices: [hrmUuid, scaleUuid, bloodPressureUuid],
+        // withServices: [
+        //   hrmUuid,
+        //   scaleUuid,
+        //   bloodPressureUuid,
+        //   dateTimeUuid,
+        //   anDScaleUuid,
+        // ],
         withServices: [],
         scanMode: ScanMode.balanced,
       ).listen((device) {
@@ -92,6 +99,13 @@ class Bluetooth {
     deviceConnection = flutterReactiveBle
         .connectToAdvertisingDevice(
             id: device.id,
+            // withServices: [
+            //   hrmUuid,
+            //   scaleUuid,
+            //   dateTimeUuid,
+            //   bloodPressureUuid,
+            //   anDScaleUuid,
+            // ],
             withServices: [],
             prescanDuration: const Duration(seconds: 5))
         .listen((update) {
@@ -101,7 +115,7 @@ class Bluetooth {
           print('connected to device');
         }
       }
-      
+
       if (update.connectionState == DeviceConnectionState.disconnected) {
         if (kDebugMode) {
           print('timed out');
