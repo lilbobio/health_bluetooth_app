@@ -194,9 +194,39 @@ class _ConnectedPageState extends State<ConnectedPage> {
             print('before write: $responseBefore');
           }
 
+          DateTime currentDate = DateTime.now();
+          int year = currentDate.year;
+          int month = currentDate.month;
+          int day = currentDate.day;
+          int hour = currentDate.hour;
+          int minute = currentDate.minute;
+          int second = currentDate.second;
+          String yearHexString = year.toRadixString(16);
+          while (yearHexString.length < 4) {
+            yearHexString = '0$yearHexString';
+          }
+
+          String year1 = yearHexString.substring(0, 2);
+          String year2 = yearHexString.substring(2, 4);
+
+          int year1Int = int.parse(year1);
+          int year2Int = int.parse(year2);
+
+          if (kDebugMode) {
+            print(
+                'hex: $yearHexString\ndate: $year $month $day $hour:$minute:$second');
+          }
+
           await widget.bluetooth.flutterReactiveBle
-              .writeCharacteristicWithResponse(dateTime,
-                  value: [0x07, 0xD0, 0x01, 0x01, 0x00, 0x00, 0x00]);
+              .writeCharacteristicWithResponse(dateTime, value: [
+            year1Int,
+            year2Int,
+            month,
+            day,
+            hour,
+            minute,
+            second
+          ]);
 
           final response = await widget.bluetooth.flutterReactiveBle
               .readCharacteristic(dateTime);
@@ -327,7 +357,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
       return returnStr;
     }
 
-    if(values[1] == 0x00 && values[2] == 0x00) {
+    if (values[1] == 0x00 && values[2] == 0x00) {
       return returnStr;
     }
 
@@ -363,7 +393,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
           print('lbs timestamp');
         }
 
-        double ;
+        //double year = ((0xff & values));
         returnStr = '$weight lbs';
     }
     return returnStr;
