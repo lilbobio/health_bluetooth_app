@@ -322,7 +322,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
   //got inspiration from https://stackoverflow.com/questions/68233478/flutter-ble-read-weight-scale-characteristic-value
   String findWeightAnd(List<int> values) {
-    String returnStr = 'error';
+    String returnStr = 'ERROR';
     if (values.isEmpty) {
       return returnStr;
     }
@@ -338,23 +338,26 @@ class _ConnectedPageState extends State<ConnectedPage> {
     switch (flags) {
       case 0:
         if (kDebugMode) {
-          print('SI');
+          print('SI no timestamp');
         }
         returnStr = '$weight Kgs';
         break;
       case 1:
         if (kDebugMode) {
-          print('$weight lbs');
+          print('lbs no time stamp');
         }
         returnStr = '$weight lbs';
         break;
       case 2:
         if (kDebugMode) {
-          print('SI');
+          print('SI time stamp');
         }
         returnStr = '$weight Kgs';
         break;
       default:
+        if (kDebugMode) {
+          print('lbs timestamp');
+        }
         returnStr = '$weight lbs';
     }
     return returnStr;
