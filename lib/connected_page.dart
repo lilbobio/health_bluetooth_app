@@ -327,6 +327,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
       return returnStr;
     }
 
+    if(values[1] == 0x00 && values[2] == 0x00) {
+      return returnStr;
+    }
+
     int flags = values[0];
 
     double weight = ((0xff & values[2]) << 8 | (0xff & values[1]) << 0) / 10;
@@ -358,6 +362,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
         if (kDebugMode) {
           print('lbs timestamp');
         }
+
+        double ;
         returnStr = '$weight lbs';
     }
     return returnStr;
