@@ -322,8 +322,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
   //got inspiration from https://stackoverflow.com/questions/68233478/flutter-ble-read-weight-scale-characteristic-value
   String findWeightAnd(List<int> values) {
-    String returnStr = '0 lbs';
-
+    String returnStr = 'error';
     if (values.isEmpty) {
       return returnStr;
     }
