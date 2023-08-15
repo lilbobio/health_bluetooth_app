@@ -330,8 +330,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
     int flags = values[0];
 
-    double weight =
-        ((0xff & values[2]) << 8 | (0xff & values[1]) << 0) / 10;
+    double weight = ((0xff & values[2]) << 8 | (0xff & values[1]) << 0) / 10;
 
     if (kDebugMode) {
       print('weight is $weight');

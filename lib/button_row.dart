@@ -55,7 +55,8 @@ class _ButtonRow extends State<ButtonRow> {
   deviceConnectButtonPressed(DiscoveredDevice device) {
     if (widget.isAssociated) {
       setState(() {
-        widget.infoString('\n\n\nadvertised connecting to ${device.name}...\n\n\n');
+        widget.infoString(
+            '\n\n\nadvertised connecting to ${device.name}...\n\n\n');
         context.loaderOverlay.show();
         widget.bluetooth.connectWithAdvertising(device);
       });

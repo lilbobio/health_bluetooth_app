@@ -60,8 +60,8 @@ class _DevicePage extends State<DevicePage> {
 
   List<Widget> createButtonList() {
     Permissions permissions = Permissions();
-    permissions.hasBluetooth().then((value){
-      if(value){
+    permissions.hasBluetooth().then((value) {
+      if (value) {
         hasBluetoothEnabled = true;
       } else {
         hasBluetoothEnabled = false;
