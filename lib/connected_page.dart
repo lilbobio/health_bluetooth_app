@@ -310,30 +310,59 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Weight is: \n\n ${findWeight(data)}\n\n\n');
+                info('Weight is: \n\n ${findWeightAnd(data)}\n\n\n');
                 infoText = '\n\n\nConnected to ${widget.device.name}';
               });
             }
           });
-        } else if (serviceUUIDString.compareTo('4101') == 0) {
-          if (kDebugMode) {
-            print('in Weight Scale Measurement: 4101');
-          }
-        } else if (serviceUUIDString.compareTo('4102') == 0) {
-          if (kDebugMode) {
-            print('in Weight Scale Feature');
-          }
-        } else {
-          if (kDebugMode) {
-            print('service: $service');
-          }
         }
       }
     });
   }
 
-  //this function is untested due to lack of equipment
+  //got inspiration from https://stackoverflow.com/questions/68233478/flutter-ble-read-weight-scale-characteristic-value
+  String findWeightAnd(List<int> values) {
+    String returnStr = '0 lbs';
 
+    if (values.isEmpty) {
+      return returnStr;
+    }
+
+    int flags = values[0];
+
+    double weight =
+        ((0xff & values[2]) << 8 | (0xff & values[1]) << 0) / 10;
+
+    if (kDebugMode) {
+      print('weight is $weight');
+    }
+
+    switch (flags) {
+      case 0:
+        if (kDebugMode) {
+          print('SI');
+        }
+        returnStr = '$weight Kgs';
+        break;
+      case 1:
+        if (kDebugMode) {
+          print('$weight lbs');
+        }
+        returnStr = '$weight lbs';
+        break;
+      case 2:
+        if (kDebugMode) {
+          print('SI');
+        }
+        returnStr = '$weight Kgs';
+        break;
+      default:
+        returnStr = '$weight lbs';
+    }
+    return returnStr;
+  }
+
+  //this function is untested due to lack of equipment
   String findWeight(List<int> values) {
     String returnStr = '0 lbs';
 
