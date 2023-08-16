@@ -206,8 +206,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
             yearHexString = '0$yearHexString';
           }
 
-          String year1 = yearHexString.substring(0, 2);
-          String year2 = yearHexString.substring(2, 4);
+          String year1 = yearHexString.substring(2, 4);
+          String year2 = yearHexString.substring(0, 2);
 
           int year1Int = int.parse(year1, radix: 16);
           int year2Int = int.parse(year2, radix: 16);
