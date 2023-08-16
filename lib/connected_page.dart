@@ -386,15 +386,42 @@ class _ConnectedPageState extends State<ConnectedPage> {
         if (kDebugMode) {
           print('SI time stamp');
         }
-        returnStr = '$weight Kgs';
+        int year1 = values[4];
+        int year2 = values[3];
+
+        String hexYear1 = year1.toRadixString(16);
+        String hexYear2 = year2.toRadixString(16);
+        String hexYear = '$hexYear1$hexYear2';
+
+        int year = int.parse(hexYear, radix: 16);
+        int month = values[5];
+        int day = values[6];
+        int hour = values[7];
+        int minute = values[8];
+        int second = values[9];
+        returnStr =
+            '$weight Kgs\n Date: $year.$month.$day $hour:$minute:$second';
         break;
       default:
         if (kDebugMode) {
           print('lbs timestamp');
         }
 
-        //double year = ((0xff & values));
-        returnStr = '$weight lbs';
+        int year1 = values[4];
+        int year2 = values[3];
+
+        String hexYear1 = year1.toRadixString(16);
+        String hexYear2 = year2.toRadixString(16);
+        String hexYear = '$hexYear1$hexYear2';
+
+        int year = int.parse(hexYear, radix: 16);
+        int month = values[5];
+        int day = values[6];
+        int hour = values[7];
+        int minute = values[8];
+        int second = values[9];
+        returnStr =
+            '$weight lbs\n Date: $year.$month.$day $hour:$minute:$second';
     }
     return returnStr;
   }
