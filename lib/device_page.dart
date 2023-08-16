@@ -33,6 +33,19 @@ class _DevicePage extends State<DevicePage> {
   List<String> associatedDevicesIds = List<String>.empty(growable: true);
   List<String> devicesIds = List<String>.empty(growable: true);
 
+  @override
+  initState() {
+    super.initState();
+    Permissions permissions = Permissions();
+    permissions.hasBluetooth().then((value) {
+      if (value) {
+        hasBluetoothEnabled = true;
+      } else {
+        hasBluetoothEnabled = false;
+      }
+    });
+  }
+
   changeInfoString(String str) {
     setState(() {
       if (kDebugMode) {
