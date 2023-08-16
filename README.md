@@ -56,6 +56,7 @@ flutter run lib/main.dart
 ### Connected to Device Page
 
 ![alt text][connectedPage]
+![alt text][weightPage]
 
 <!-- [homeScreenImage]: assets/images/homescreen_screenshot.jpg "home screen"
 [loadingScreen1]: assets/images/loadingScreen1.jpg "loading screen between home screen and device page" -->
@@ -65,3 +66,4 @@ flutter run lib/main.dart
 [AssociatedPageEmpty]: assets/images/Assocaited_Page.jpg "Empty Associated Page"
 [AssociatedPage]: assets/images/Associated_Page2.jpg "Associated Page After Connection"
 [bluetoothIsDisabled]: assets/images/Bluetooth_is_disabled.jpg "Shows when Device has bluetooth disabled"
+[weightPage]: assets/images/weight_page.jpg "The Connected Page when Connected to AND Scale"
