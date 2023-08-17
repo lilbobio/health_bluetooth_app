@@ -33,87 +33,6 @@ class _DevicePage extends State<DevicePage> {
   List<String> associatedDevicesIds = List<String>.empty(growable: true);
   List<String> devicesIds = List<String>.empty(growable: true);
 
-  @override
-  void initState() {
-    super.initState();
-    Permissions permissions = Permissions();
-
-    permissions.hasBluetooth().then((hasBluetooth) {
-      if (hasBluetooth) {
-        hasBluetoothEnabled = true;
-        setState(() {
-          context.loaderOverlay.show();
-          changeInfoString('\n\n\nScanning for devices...\n\n');
-          bluetooth.frbScan();
-          Future.delayed(const Duration(seconds: 4), () {
-            bluetooth.fbrEndScan();
-            context.loaderOverlay.hide();
-            if (bluetooth.devices.isEmpty) {
-              setState(() {
-                changeInfoString('\n\n\nFound 0 Relevant Devices\n\n');
-              });
-            } else {
-              setState(() {
-                changeInfoString(
-                    '\n\n\n     Click on the Device\nYou Want to Connect to\n\n');
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => DevicePage(title: widget.title),
-                  ),
-                ).then(onGoBack);
-              });
-            }
-          });
-        });
-      } else {
-        hasBluetoothEnabled = false;
-        setState(() {
-          changeInfoString('\n\n\nBluetooth Disabled\n\n');
-        });
-      }
-    });
-  }
-
-  FutureOr onGoBack(dynamic value) {
-    setState(() {
-      if (kDebugMode) {
-        print('refreshing page');
-      }
-      Permissions permissions = Permissions();
-
-      permissions.hasBluetooth().then((hasBluetooth) {
-        if (hasBluetooth) {
-          hasBluetoothEnabled = true;
-        } else {
-          hasBluetoothEnabled = false;
-        }
-      });
-
-      if (!hasBluetoothEnabled) {
-        changeInfoString('\n\n\nBluetooth Disconnected\n\n');
-      } else {
-        setState(
-          () {
-            changeInfoString('\n\n\nFinding devices again...\n\n');
-            context.loaderOverlay.show();
-            bluetooth.devices.clear();
-            buttonWidgets.clear();
-
-            bluetooth.frbScan();
-            Future.delayed(const Duration(seconds: 4), () {
-              setState(() {
-                bluetooth.fbrEndScan();
-              });
-              context.loaderOverlay.hide();
-              buttonWidgets = createButtonList();
-            });
-          },
-        );
-      }
-    });
-  }
-
   changeInfoString(String str) {
     setState(() {
       if (kDebugMode) {
@@ -139,15 +58,9 @@ class _DevicePage extends State<DevicePage> {
     }
   }
 
-  List<Widget> createButtonList() {
+  Future<List<Widget>> createButtonList() async {
     Permissions permissions = Permissions();
-    permissions.hasBluetooth().then((value) {
-      if (value) {
-        hasBluetoothEnabled = true;
-      } else {
-        hasBluetoothEnabled = false;
-      }
-    });
+    hasBluetoothEnabled = await permissions.hasBluetooth();
 
     if (hasBluetoothEnabled) {
       updateIdStrings();
@@ -216,13 +129,13 @@ class _DevicePage extends State<DevicePage> {
     }
   }
 
-  List<Widget> changeFromAssociated() {
+  Future<List<Widget>> changeFromAssociated() {
     return createButtonList();
   }
 
   @override
   Widget build(BuildContext context) {
-    buttonWidgets = createButtonList();
+    createButtonList().then((value) => buttonWidgets = value);
 
     return Scaffold(
       appBar: AppBar(title: Text(widget.title)),
@@ -275,7 +188,9 @@ class _DevicePage extends State<DevicePage> {
                       setState(() {
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        buttonWidgets = changeFromAssociated();
+                        //buttonWidgets = await changeFromAssociated();
+                        changeFromAssociated()
+                            .then((value) => buttonWidgets = value);
                         if (isOnAssociated) {
                           setState(() {
                             if (associatedDevices.isEmpty) {
@@ -341,12 +256,13 @@ class _DevicePage extends State<DevicePage> {
                             buttonWidgets.clear();
 
                             bluetooth.frbScan();
-                            Future.delayed(const Duration(seconds: 4), () {
+                            Future.delayed(const Duration(seconds: 4),
+                                () async {
                               setState(() {
                                 bluetooth.fbrEndScan();
                               });
                               context.loaderOverlay.hide();
-                              buttonWidgets = createButtonList();
+                              buttonWidgets = await createButtonList();
                             });
                           },
                         );
