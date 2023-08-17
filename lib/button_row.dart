@@ -63,7 +63,7 @@ class _ButtonRow extends State<ButtonRow> {
       setState(() {
         widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
         context.loaderOverlay.show();
-        widget.bluetooth.connectWithAdvertising(device);
+        widget.bluetooth.connect(device);
       });
     }
     setState(() {
