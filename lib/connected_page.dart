@@ -47,7 +47,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         Navigator.pop(context, true);
       } else {
         setState(() {
-          infoText = 'Press the plus button to pair device';
+          infoText = 'Press the plus button\nto pair device\n\n';
           changeInfoString('Press the plus button to pair device');
         });
       }
