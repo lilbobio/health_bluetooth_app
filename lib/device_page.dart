@@ -1,13 +1,10 @@
 import 'dart:async';
-
+import 'bluetooth.dart';
+import 'button_row.dart';
 import 'package:bluetooth_health_app/permissions.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
-import 'package:loader_overlay/loader_overlay.dart';
-
-import 'bluetooth.dart';
-import 'button_row.dart';
 
 class DevicePage extends StatefulWidget {
   const DevicePage({super.key, required this.title});
