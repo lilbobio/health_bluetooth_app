@@ -421,7 +421,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         int minute = values[8];
         int second = values[9];
         returnStr =
-            '$weight lbs\n Date: $year.$month.$day $hour:$minute:$second';
+            '$weight lbs\n\nDate:\n$year.$month.$day $hour:$minute:$second';
     }
     return returnStr;
   }
