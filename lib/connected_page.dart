@@ -27,7 +27,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   String servicesText = '\n\nConnecting to Device...\n\n\n';
   String infoText = '';
   late Timer everySecond;
-  bool isFirstConnect = true;
+  int isFirstConnect = 0;
 
   changeInfoString(String str) {
     setState(() {
@@ -90,7 +90,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
             ),
 
             //get scale weight button
-            if (widget.device.name.contains('A&D'))
+            if (widget.device.name.contains('A&D') &&
+                (isFirstConnect == 0 || isFirstConnect == 1))
               Align(
                 alignment: Alignment.bottomCenter,
                 child: FloatingActionButton(
@@ -100,16 +101,17 @@ class _ConnectedPageState extends State<ConnectedPage> {
                         print('implement this button ');
                       }
 
-                      if (isFirstConnect) {
+                      if (isFirstConnect == 0) {
                         if (kDebugMode) {
                           print('in first connect');
                         }
-                        isFirstConnect = false;
+                        isFirstConnect = 1;
                         addButton();
                       } else {
                         if (kDebugMode) {
                           print('in second connect');
                         }
+                        isFirstConnect = 2;
                         getWeight();
                       }
                     });
