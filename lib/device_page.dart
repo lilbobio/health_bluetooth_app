@@ -32,9 +32,9 @@ class _DevicePage extends State<DevicePage> {
 
   changeInfoString(String str) {
     setState(() {
-      if (kDebugMode) {
-        print('changing info string to: $str');
-      }
+      // if (kDebugMode) {
+      //   print('changing info string to: $str');
+      // }
       infoString = str;
     });
   }
@@ -72,9 +72,9 @@ class _DevicePage extends State<DevicePage> {
 
           for (int i = 0; i < associatedDevices.length; i++) {
             if (devicesIds.contains(associatedDevices.elementAt(i).id)) {
-              if (kDebugMode) {
-                print('device $i: ${associatedDevices[i]}');
-              }
+              // if (kDebugMode) {
+              //   print('device $i: ${associatedDevices[i]}');
+              // }
               setState(() {
                 buttonWidgets.add(ButtonRow(
                   device: associatedDevices.elementAt(i),
@@ -100,10 +100,10 @@ class _DevicePage extends State<DevicePage> {
           for (int i = 0; i < bluetooth.devices.length; i++) {
             if (!associatedDevicesIds
                 .contains(bluetooth.devices.elementAt(i).id)) {
-              if (kDebugMode) {
-                print(
-                    'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
-              }
+              // if (kDebugMode) {
+              //   print(
+              //       'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
+              // }
               setState(() {
                 buttonWidgets.add(ButtonRow(
                   bluetooth: bluetooth,

@@ -345,6 +345,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
               });
             }
           });
+        }else{
+          if (kDebugMode) {
+            print('service: $service');
+          }
         }
       }
     });
