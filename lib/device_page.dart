@@ -251,7 +251,6 @@ class _DevicePage extends State<DevicePage> {
                       } else {
                         setState(
                           () {
-                            context.loaderOverlay.show();
                             bluetooth.devices.clear();
                             buttonWidgets.clear();
 
@@ -261,7 +260,6 @@ class _DevicePage extends State<DevicePage> {
                               setState(() {
                                 bluetooth.fbrEndScan();
                               });
-                              context.loaderOverlay.hide();
                               buttonWidgets = await createButtonList();
                             });
                           },
