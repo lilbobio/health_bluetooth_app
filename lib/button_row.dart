@@ -36,8 +36,8 @@ class _ButtonRow extends State<ButtonRow> {
               setState(() {
                 widget.infoString('\n\n\nConnecting to\n${widget.device}\n\n');
                 deviceConnectButtonPressed(widget.device);
-              });
-            },
+              }); //setState
+            }, //onPressed
             child: Text(
               widget.device.name,
               textAlign: TextAlign.center,
@@ -49,7 +49,7 @@ class _ButtonRow extends State<ButtonRow> {
         ],
       ),
     );
-  }
+  } //_ButtonRow
 
   deviceConnectButtonPressed(DiscoveredDevice device) {
     if (widget.isAssociated) {
@@ -58,14 +58,14 @@ class _ButtonRow extends State<ButtonRow> {
             '\n\n\nadvertised connecting to ${device.name}...\n\n\n');
         context.loaderOverlay.show();
         widget.bluetooth.connectWithAdvertising(device);
-      });
+      }); //setState
     } else {
       setState(() {
         widget.infoString('\n\n\nconnecting to ${device.name}...\n\n\n');
         context.loaderOverlay.show();
         widget.bluetooth.connect(device);
-      });
-    }
+      }); //setState
+    } //else
     setState(() {
       if (!widget.associatedDevices.contains(device)) {
         widget.associatedDevices.add(device);
@@ -80,6 +80,6 @@ class _ButtonRow extends State<ButtonRow> {
                   device: device,
                 )),
           ));
-    });
-  }
-}
+    }); //setState
+  } //deviceConnectButtonPressed
+} //_ButtonRow

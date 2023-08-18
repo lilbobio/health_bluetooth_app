@@ -11,7 +11,7 @@ class DevicePage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() => _DevicePage();
-}
+} //DevicePage
 
 class _DevicePage extends State<DevicePage> {
   String infoString =
@@ -38,8 +38,8 @@ class _DevicePage extends State<DevicePage> {
   changeButtonText(String str) {
     setState(() {
       associatedButtonText = str;
-    });
-  }
+    }); //setState
+  } //changeButtonText
 
   updateIdStrings() {
     for (int i = 0; i < bluetooth.devices.length; i++) {
@@ -49,7 +49,7 @@ class _DevicePage extends State<DevicePage> {
     for (int i = 0; i < associatedDevices.length; i++) {
       associatedDevicesIds.add(associatedDevices.elementAt(i).id);
     }
-  }
+  } //updateIdStrings
 
   Future<List<Widget>> createButtonList() async {
     Permissions permissions = Permissions();
@@ -115,11 +115,7 @@ class _DevicePage extends State<DevicePage> {
       changeInfoString('\n\n\nBluetooth Disabled\n\n');
       return List.empty(growable: true);
     }
-  }
-
-  Future<List<Widget>> changeFromAssociated() {
-    return createButtonList();
-  }
+  } //createButtonList
 
   @override
   Widget build(BuildContext context) {
@@ -176,7 +172,7 @@ class _DevicePage extends State<DevicePage> {
                       setState(() {
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        changeFromAssociated()
+                        createButtonList()
                             .then((value) => buttonWidgets = value);
                         if (isOnAssociated) {
                           setState(() {

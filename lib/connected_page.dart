@@ -112,8 +112,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
                         isFirstConnect = 2;
                         getWeight();
                       }
-                    });
-                  },
+                    }); //setState
+                  }, //onPressed
                   heroTag: null,
                   child: const Icon(Icons.add),
                 ),
@@ -161,7 +161,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
                 ),
               ),
             ),
-          ],
+          ], //children
         ),
       ),
     );
@@ -349,10 +349,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
           if (kDebugMode) {
             print('service: $service');
           }
-        }
-      }
-    });
-  }
+        } //else
+      } //for
+    }); //then 
+  } //findServices
 
   //got inspiration from https://stackoverflow.com/questions/68233478/flutter-ble-read-weight-scale-characteristic-value
   String findWeightAnd(List<int> values) {
