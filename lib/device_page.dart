@@ -2,7 +2,6 @@ import 'dart:async';
 import 'bluetooth.dart';
 import 'button_row.dart';
 import 'package:bluetooth_health_app/permissions.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_reactive_ble/flutter_reactive_ble.dart';
 
@@ -64,7 +63,7 @@ class _DevicePage extends State<DevicePage> {
       if (isOnAssociated) {
         if (associatedDevices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\nNo Associated Devices\n');
+            changeInfoString('\n\n\nNo Associated Devices\n\nClick the search button\nto search for more Bluetooth devices\n');
           });
           return List.empty(growable: true);
         } else {
@@ -91,7 +90,7 @@ class _DevicePage extends State<DevicePage> {
       } else {
         if (bluetooth.devices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\nNo Devices Found\n');
+            changeInfoString('\n\n\nNo Devices Found\n\nClick the Search to\nFind More Devices\n');
           });
           return List.empty(growable: true);
         } else {
