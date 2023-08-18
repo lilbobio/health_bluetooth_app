@@ -15,7 +15,7 @@ class Bluetooth {
   final Uuid scaleUuid = Uuid.parse('181D');
   final Uuid bloodPressureUuid = Uuid.parse('1810');
   final Uuid dateTimeUuid = Uuid.parse('2A08');
-  final Uuid anDScaleUuid = Uuid.parse('4100');
+  final Uuid anDScaleUuid = Uuid.parse('23434100-1fe4-1eff-80cb-00ff78297d8b');
   bool isConnected = false;
   // ignore: avoid_init_to_null
   bool? isConnectable = null;
@@ -51,14 +51,13 @@ class Bluetooth {
         print('is scanning');
       }
       subscription = flutterReactiveBle.scanForDevices(
-        // withServices: [
-        //   hrmUuid,
-        //   scaleUuid,
-        //   bloodPressureUuid,
-        //   dateTimeUuid,
-        //   anDScaleUuid,
-        // ],
-        withServices: [],
+        withServices: [
+          hrmUuid,
+          scaleUuid,
+          bloodPressureUuid,
+          dateTimeUuid,
+          anDScaleUuid,
+        ],
         scanMode: ScanMode.balanced,
       ).listen((device) {
         if (device.name.isNotEmpty) {
@@ -98,14 +97,13 @@ class Bluetooth {
     deviceConnection = flutterReactiveBle
         .connectToAdvertisingDevice(
             id: device.id,
-            // withServices: [
-            //   hrmUuid,
-            //   scaleUuid,
-            //   dateTimeUuid,
-            //   bloodPressureUuid,
-            //   anDScaleUuid,
-            // ],
-            withServices: [],
+            withServices: [
+              hrmUuid,
+              scaleUuid,
+              dateTimeUuid,
+              bloodPressureUuid,
+              anDScaleUuid,
+            ],
             prescanDuration: const Duration(seconds: 5))
         .listen((update) {
       if (update.connectionState == DeviceConnectionState.connected) {
@@ -133,7 +131,7 @@ class Bluetooth {
     deviceConnection = flutterReactiveBle
         .connectToDevice(
       id: device.id,
-    ) //connectionTimeout: const Duration())
+    )
         .listen((update) {
       if (update.connectionState == DeviceConnectionState.connected) {
         isConnected = true;
