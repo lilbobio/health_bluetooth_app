@@ -345,13 +345,13 @@ class _ConnectedPageState extends State<ConnectedPage> {
               });
             }
           });
-        }else{
+        } else {
           if (kDebugMode) {
             print('service: $service');
           }
         } //else
       } //for
-    }); //then 
+    }); //then
   } //findServices
 
   //got inspiration from https://stackoverflow.com/questions/68233478/flutter-ble-read-weight-scale-characteristic-value
