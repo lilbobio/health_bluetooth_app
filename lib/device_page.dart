@@ -31,9 +31,6 @@ class _DevicePage extends State<DevicePage> {
 
   changeInfoString(String str) {
     setState(() {
-      // if (kDebugMode) {
-      //   print('changing info string to: $str');
-      // }
       infoString = str;
     });
   }
@@ -63,7 +60,8 @@ class _DevicePage extends State<DevicePage> {
       if (isOnAssociated) {
         if (associatedDevices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\nNo Associated Devices\n\nClick the search button\nto search for more Bluetooth devices\n');
+            changeInfoString(
+                '\n\n\nNo Associated Devices\n\nClick the search button\nto search for more Bluetooth devices\n');
           });
           return List.empty(growable: true);
         } else {
@@ -71,9 +69,6 @@ class _DevicePage extends State<DevicePage> {
 
           for (int i = 0; i < associatedDevices.length; i++) {
             if (devicesIds.contains(associatedDevices.elementAt(i).id)) {
-              // if (kDebugMode) {
-              //   print('device $i: ${associatedDevices[i]}');
-              // }
               setState(() {
                 buttonWidgets.add(ButtonRow(
                   device: associatedDevices.elementAt(i),
@@ -90,7 +85,8 @@ class _DevicePage extends State<DevicePage> {
       } else {
         if (bluetooth.devices.isEmpty) {
           setState(() {
-            changeInfoString('\n\n\nNo Devices Found\n\nClick the Search to\nFind More Devices\n');
+            changeInfoString(
+                '\n\n\nNo Devices Found\n\nClick the Search to\nFind More Devices\n');
           });
           return List.empty(growable: true);
         } else {
@@ -99,10 +95,6 @@ class _DevicePage extends State<DevicePage> {
           for (int i = 0; i < bluetooth.devices.length; i++) {
             if (!associatedDevicesIds
                 .contains(bluetooth.devices.elementAt(i).id)) {
-              // if (kDebugMode) {
-              //   print(
-              //       'associated devices is $isOnAssociated. device $i: ${bluetooth.devices[i]}');
-              // }
               setState(() {
                 buttonWidgets.add(ButtonRow(
                   bluetooth: bluetooth,
@@ -184,7 +176,6 @@ class _DevicePage extends State<DevicePage> {
                       setState(() {
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        //buttonWidgets = await changeFromAssociated();
                         changeFromAssociated()
                             .then((value) => buttonWidgets = value);
                         if (isOnAssociated) {
@@ -198,7 +189,7 @@ class _DevicePage extends State<DevicePage> {
                             }
                             changeButtonText(
                                 'Change to\n non-Associated Devices');
-                          });
+                          }); //setState
                         } else {
                           setState(() {
                             if (bluetooth.devices.isNotEmpty) {
@@ -208,10 +199,10 @@ class _DevicePage extends State<DevicePage> {
                               changeInfoString('\n\n\nNo Devices Found\n\n');
                             }
                             changeButtonText('Change to\n Associated Devices');
-                          });
-                        }
-                      });
-                    },
+                          }); //setState
+                        } //else
+                      }); //setState
+                    }, //on pressed
                     child: Text(
                       associatedButtonText,
                       textAlign: TextAlign.center,
@@ -272,5 +263,5 @@ class _DevicePage extends State<DevicePage> {
         ),
       ),
     );
-  }
-}
+  } //build
+} //_devicePage
