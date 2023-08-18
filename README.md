@@ -58,8 +58,6 @@ flutter run lib/main.dart
 ![alt text][connectedPage]
 ![alt text][weightPage]
 
-<!-- [homeScreenImage]: assets/images/homescreen_screenshot.jpg "home screen"
-[loadingScreen1]: assets/images/loadingScreen1.jpg "loading screen between home screen and device page" -->
 [loadingScreen2]: assets/images/loadingScreen2.jpg "loading screen between device page and connected page"
 [deviceSelectPage]: assets/images/Device_Page.jpg "device select page"
 [connectedPage]: assets/images/Cconnected_page.jpg "connected page"
