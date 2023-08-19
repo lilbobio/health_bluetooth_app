@@ -110,7 +110,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
                           print('in second connect');
                         }
                         isFirstConnect = 2;
-                        getWeight();
+                        findServices(
+                            widget.device, widget.bluetooth, changeInfoString);
                       }
                     }); //setState
                   }, //onPressed
@@ -165,10 +166,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
         ),
       ),
     );
-  }
-
-  getWeight() {
-    findServices(widget.device, widget.bluetooth, changeInfoString);
   }
 
   addButton() {
