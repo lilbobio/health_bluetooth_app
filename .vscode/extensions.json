@@ -9,6 +9,7 @@
         "dart-code.dart-code",
         "streetsidesoftware.code-spell-checker",
         "yzhang.markdown-all-in-one",
-        "davidanson.vscode-markdownlint"
+        "davidanson.vscode-markdownlint",
+        "kennylong.kubernetes-yaml-formatter"
     ]
 }
