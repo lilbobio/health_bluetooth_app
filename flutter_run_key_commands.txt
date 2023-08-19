@@ -1,0 +1,25 @@
+Flutter run key commands.
+r Hot reload.
+R Hot restart.
+v Open Flutter DevTools.
+s Save a screenshot to flutter.png.
+w Dump widget hierarchy to the console.                                               
+t Dump rendering tree to the console.                                          
+L Dump layer tree to the console.                                               
+f Dump focus tree to the console.                                             
+S Dump accessibility tree in traversal order.                                   
+U Dump accessibility tree in inverse hit test order.                            
+i Toggle widget inspector.                                  
+p Toggle the display of construction lines.                                  
+I Toggle oversized image inversion.                                     
+o Simulate different operating systems.                                      
+b Toggle platform brightness (dark and light mode).                        
+P Toggle performance overlay.                                    
+a Toggle timeline events for all widget build methods.                    
+M Write SkSL shaders to a unique file in the project directory.
+g Run source code generators.
+j Dump frame raster stats for the current frame. (Unsupported for web)
+h Repeat this help message.
+d Detach (terminate "flutter run" but leave application running).
+c Clear the screen
+q Quit (terminate the application on the device).
