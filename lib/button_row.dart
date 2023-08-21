@@ -78,6 +78,7 @@ class _ButtonRow extends State<ButtonRow> {
                   bluetooth: widget.bluetooth,
                   title: device.name,
                   device: device,
+                  isAssociated: widget.isAssociated,
                 )),
           ));
     }); //setState
