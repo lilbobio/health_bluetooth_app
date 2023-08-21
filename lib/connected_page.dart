@@ -8,16 +8,19 @@ import 'package:loader_overlay/loader_overlay.dart';
 
 import 'bluetooth.dart';
 
+//TODO: if the device is AND and associated skip the pairing process
 class ConnectedPage extends StatefulWidget {
   const ConnectedPage(
       {super.key,
       required this.title,
       required this.bluetooth,
-      required this.device});
+      required this.device,
+      required this.isAssociated});
 
   final String title;
   final Bluetooth bluetooth;
   final DiscoveredDevice device;
+  final bool isAssociated;
 
   @override
   State<ConnectedPage> createState() => _ConnectedPageState();
@@ -40,7 +43,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
     super.initState();
     infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
     context.loaderOverlay.show();
-    Future.delayed(const Duration(seconds: 4), () {
+    Future.delayed(const Duration(seconds: 10), () {
       context.loaderOverlay.hide();
       if (widget.bluetooth.isConnected && !widget.device.name.contains('A&D')) {
         findServices(widget.device, widget.bluetooth, changeInfoString);
