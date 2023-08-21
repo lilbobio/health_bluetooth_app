@@ -245,7 +245,7 @@ class _DevicePage extends State<DevicePage> {
                               buttonWidgets.clear();
 
                               bluetooth.frbScan();
-                              Future.delayed(const Duration(minutes: 4),
+                              Future.delayed(const Duration(minutes: 20),
                                   () async {
                                 setState(() {
                                   bluetooth.fbrEndScan();
