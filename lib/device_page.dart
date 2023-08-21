@@ -190,7 +190,7 @@ class _DevicePage extends State<DevicePage> {
                               buttonWidgets.clear();
 
                               bluetooth.frbScan();
-                              Future.delayed(const Duration(seconds: 4),
+                              Future.delayed(const Duration(minutes: 20),
                                   () async {
                                 setState(() {
                                   bluetooth.fbrEndScan();
@@ -244,7 +244,7 @@ class _DevicePage extends State<DevicePage> {
                               buttonWidgets.clear();
 
                               bluetooth.frbScan();
-                              Future.delayed(const Duration(seconds: 4),
+                              Future.delayed(const Duration(minutes: 4),
                                   () async {
                                 setState(() {
                                   bluetooth.fbrEndScan();
@@ -270,7 +270,7 @@ class _DevicePage extends State<DevicePage> {
                       associatedButtonText,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 20.0,
+                        fontSize: 18.0,
                       ),
                     ),
                   ),
