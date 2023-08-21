@@ -236,7 +236,6 @@ class _DevicePage extends State<DevicePage> {
                             changeButtonText('Other Devices');
                           }); //setState
                         } else {
-                          
                           setState(
                             () {
                               bluetooth.devices.clear();
@@ -251,7 +250,7 @@ class _DevicePage extends State<DevicePage> {
                                 buttonWidgets = await createButtonList();
                               });
                             },
-                          );
+                          ); //setState
 
                           setState(() {
                             if (bluetooth.devices.isNotEmpty) {
