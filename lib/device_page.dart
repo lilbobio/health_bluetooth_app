@@ -16,7 +16,7 @@ class DevicePage extends StatefulWidget {
 class _DevicePage extends State<DevicePage> {
   String infoString =
       '\n\n\n     Click on the Device\nYou Want to Connect to\n\n';
-  String associatedButtonText = 'Change to\n non-Associated Devices';
+  String associatedButtonText = 'Other Devices';
   bool isOnAssociated = true;
   Bluetooth bluetooth = Bluetooth();
   bool hasBluetoothEnabled = false;
@@ -158,66 +158,15 @@ class _DevicePage extends State<DevicePage> {
               ),
             ),
 
-            //see associated buttons
-            Align(
-              alignment: Alignment.center,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        textStyle: const TextStyle(fontSize: 20)),
-                    onPressed: () {
-                      setState(() {
-                        buttonWidgets.clear();
-                        isOnAssociated = !isOnAssociated;
-                        createButtonList()
-                            .then((value) => buttonWidgets = value);
-                        if (isOnAssociated) {
-                          setState(() {
-                            if (associatedDevices.isEmpty) {
-                              changeInfoString(
-                                  '\n\n\nNo Associated Devices Found\n\n');
-                            } else {
-                              changeInfoString(
-                                  '\n\n\nClick on the Associated Device\n to Connect to it\n\n');
-                            }
-                            changeButtonText(
-                                'Change to\n non-Associated Devices');
-                          }); //setState
-                        } else {
-                          setState(() {
-                            if (bluetooth.devices.isNotEmpty) {
-                              changeInfoString(
-                                  '\n\n\nClick on the Device you want to connect to\n\n');
-                            } else {
-                              changeInfoString('\n\n\nNo Devices Found\n\n');
-                            }
-                            changeButtonText('Change to\n Associated Devices');
-                          }); //setState
-                        } //else
-                      }); //setState
-                    }, //on pressed
-                    child: Text(
-                      associatedButtonText,
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 18.0,
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
             //scan button
             Align(
               alignment: Alignment.bottomCenter,
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  FloatingActionButton(
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueGrey),
                     onPressed: () {
                       Permissions permissions = Permissions();
 
@@ -249,9 +198,65 @@ class _DevicePage extends State<DevicePage> {
                         );
                       }
                     },
-                    heroTag: null,
-                    child: const Icon(Icons.search),
+                    child: const Text(
+                      'Search',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 18),
+                    ),
                   )
+                ],
+              ),
+            ),
+
+            //see associated buttons
+            Align(
+              alignment: Alignment.center,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blue,
+                        textStyle: const TextStyle(fontSize: 20)),
+                    onPressed: () {
+                      setState(() {
+                        buttonWidgets.clear();
+                        isOnAssociated = !isOnAssociated;
+                        createButtonList()
+                            .then((value) => buttonWidgets = value);
+                        if (isOnAssociated) {
+                          setState(() {
+                            if (associatedDevices.isEmpty) {
+                              changeInfoString(
+                                  '\n\n\nNo Associated Devices Found\n\n');
+                            } else {
+                              changeInfoString(
+                                  '\n\n\nClick on the Associated Device\n to Connect to it\n\n');
+                            }
+                            changeButtonText(
+                                'Other Devices');
+                          }); //setState
+                        } else {
+                          setState(() {
+                            if (bluetooth.devices.isNotEmpty) {
+                              changeInfoString(
+                                  '\n\n\nClick on the Device you want to connect to\n\n');
+                            } else {
+                              changeInfoString('\n\n\nNo Devices Found\n\n');
+                            }
+                            changeButtonText('Associated Devices');
+                          }); //setState
+                        } //else
+                      }); //setState
+                    }, //on pressed
+                    child: Text(
+                      associatedButtonText,
+                      textAlign: TextAlign.center,
+                      style: const TextStyle(
+                        fontSize: 18.0,
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
