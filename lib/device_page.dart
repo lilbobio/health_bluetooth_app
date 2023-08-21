@@ -236,6 +236,23 @@ class _DevicePage extends State<DevicePage> {
                             changeButtonText('Other Devices');
                           }); //setState
                         } else {
+                          
+                          setState(
+                            () {
+                              bluetooth.devices.clear();
+                              buttonWidgets.clear();
+
+                              bluetooth.frbScan();
+                              Future.delayed(const Duration(seconds: 4),
+                                  () async {
+                                setState(() {
+                                  bluetooth.fbrEndScan();
+                                });
+                                buttonWidgets = await createButtonList();
+                              });
+                            },
+                          );
+
                           setState(() {
                             if (bluetooth.devices.isNotEmpty) {
                               changeInfoString(
