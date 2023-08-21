@@ -159,54 +159,55 @@ class _DevicePage extends State<DevicePage> {
             ),
 
             //scan button
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueGrey),
-                    onPressed: () {
-                      Permissions permissions = Permissions();
+            if (!isOnAssociated)
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueGrey),
+                      onPressed: () {
+                        Permissions permissions = Permissions();
 
-                      permissions.hasBluetooth().then((hasBluetooth) {
-                        if (hasBluetooth) {
-                          hasBluetoothEnabled = true;
+                        permissions.hasBluetooth().then((hasBluetooth) {
+                          if (hasBluetooth) {
+                            hasBluetoothEnabled = true;
+                          } else {
+                            hasBluetoothEnabled = false;
+                          }
+                        });
+
+                        if (!hasBluetoothEnabled) {
+                          changeInfoString('\n\n\nBluetooth Disconnected\n\n');
                         } else {
-                          hasBluetoothEnabled = false;
-                        }
-                      });
+                          setState(
+                            () {
+                              bluetooth.devices.clear();
+                              buttonWidgets.clear();
 
-                      if (!hasBluetoothEnabled) {
-                        changeInfoString('\n\n\nBluetooth Disconnected\n\n');
-                      } else {
-                        setState(
-                          () {
-                            bluetooth.devices.clear();
-                            buttonWidgets.clear();
-
-                            bluetooth.frbScan();
-                            Future.delayed(const Duration(seconds: 4),
-                                () async {
-                              setState(() {
-                                bluetooth.fbrEndScan();
+                              bluetooth.frbScan();
+                              Future.delayed(const Duration(seconds: 4),
+                                  () async {
+                                setState(() {
+                                  bluetooth.fbrEndScan();
+                                });
+                                buttonWidgets = await createButtonList();
                               });
-                              buttonWidgets = await createButtonList();
-                            });
-                          },
-                        );
-                      }
-                    },
-                    child: const Text(
-                      'Search',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 18),
-                    ),
-                  )
-                ],
+                            },
+                          );
+                        }
+                      },
+                      child: const Text(
+                        'Search',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    )
+                  ],
+                ),
               ),
-            ),
 
             //see associated buttons
             Align(
@@ -215,9 +216,8 @@ class _DevicePage extends State<DevicePage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        textStyle: const TextStyle(fontSize: 20)),
+                    style:
+                        ElevatedButton.styleFrom(backgroundColor: Colors.blue),
                     onPressed: () {
                       setState(() {
                         buttonWidgets.clear();
@@ -233,8 +233,7 @@ class _DevicePage extends State<DevicePage> {
                               changeInfoString(
                                   '\n\n\nClick on the Associated Device\n to Connect to it\n\n');
                             }
-                            changeButtonText(
-                                'Other Devices');
+                            changeButtonText('Other Devices');
                           }); //setState
                         } else {
                           setState(() {
@@ -253,7 +252,7 @@ class _DevicePage extends State<DevicePage> {
                       associatedButtonText,
                       textAlign: TextAlign.center,
                       style: const TextStyle(
-                        fontSize: 18.0,
+                        fontSize: 20.0,
                       ),
                     ),
                   ),
