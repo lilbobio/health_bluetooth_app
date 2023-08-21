@@ -224,8 +224,9 @@ class _DevicePage extends State<DevicePage> {
                       setState(() {
                         buttonWidgets.clear();
                         isOnAssociated = !isOnAssociated;
-                        createButtonList()
-                            .then((value) => buttonWidgets = value);
+                        createButtonList().then((value) {
+                          buttonWidgets = value;
+                        });
                         if (isOnAssociated) {
                           setState(() {
                             if (associatedDevices.isEmpty) {
