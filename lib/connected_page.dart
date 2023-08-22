@@ -127,25 +127,28 @@ class _ConnectedPageState extends State<ConnectedPage> {
               ),
 
             //save value button
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(fontSize: 20)),
-                onPressed: () {
-                  if (kDebugMode) {
-                    print('wanted to save value\n will implement later');
-                  }
-                },
-                child: const Text(
-                  'Save Value',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 18.0,
+            if (!(widget.device.name.contains('A&D') &&
+                (isFirstConnect == 0 || isFirstConnect == 1) &&
+                !widget.isAssociated))
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(fontSize: 20)),
+                  onPressed: () {
+                    if (kDebugMode) {
+                      print('wanted to save value\n will implement later');
+                    }
+                  },
+                  child: const Text(
+                    'Save Value',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 18.0,
+                    ),
                   ),
                 ),
               ),
-            ),
 
             //disconnect button
             Align(
