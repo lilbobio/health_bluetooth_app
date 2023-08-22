@@ -94,7 +94,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
 
             //get scale weight button
             if (widget.device.name.contains('A&D') &&
-                (isFirstConnect == 0 || isFirstConnect == 1))
+                (isFirstConnect == 0 || isFirstConnect == 1) &&
+                !widget.isAssociated)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: FloatingActionButton(
