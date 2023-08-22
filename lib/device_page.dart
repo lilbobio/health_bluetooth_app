@@ -121,10 +121,11 @@ class _DevicePage extends State<DevicePage> {
 
   @override
   Widget build(BuildContext context) {
-    createButtonList().then((value) => buttonWidgets = value);
+    createButtonList().then((value) {
+      buttonWidgets = value;
+    });
 
     return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
       body: SafeArea(
         child: Column(
           children: [
