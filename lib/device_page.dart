@@ -63,7 +63,7 @@ class _DevicePage extends State<DevicePage> {
         if (associatedDevices.isEmpty) {
           setState(() {
             changeInfoString(
-                '\n\n\nNo Associated Devices\n\nClick the search button\nto search for more Bluetooth devices\n');
+                '\n\n\nNo Associated Devices\n\n\n');
           });
           return List.empty(growable: true);
         } else {
