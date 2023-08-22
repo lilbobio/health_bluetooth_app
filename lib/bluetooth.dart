@@ -52,14 +52,14 @@ class Bluetooth {
         print('is scanning');
       }
       subscription = flutterReactiveBle.scanForDevices(
-        // withServices: [
-        //   hrmUuid,
-        //   scaleUuid,
-        //   bloodPressureUuid,
-        //   dateTimeUuid,
-        //   anDScaleUuid,
-        // ],
-        withServices: [],
+        withServices: [
+          hrmUuid,
+          scaleUuid,
+          bloodPressureUuid,
+          dateTimeUuid,
+          anDScaleUuid,
+        ],
+        // withServices: [],
         scanMode: ScanMode.balanced,
       ).listen((device) {
         if (device.name.isNotEmpty) {
@@ -99,14 +99,14 @@ class Bluetooth {
     deviceConnection = flutterReactiveBle
         .connectToAdvertisingDevice(
             id: device.id,
-            // withServices: [
-            //   hrmUuid,
-            //   scaleUuid,
-            //   dateTimeUuid,
-            //   bloodPressureUuid,
-            //   anDScaleUuid,
-            // ],
-            withServices: [],
+            withServices: [
+              hrmUuid,
+              scaleUuid,
+              dateTimeUuid,
+              bloodPressureUuid,
+              anDScaleUuid,
+            ],
+            //withServices: [],
             prescanDuration: const Duration(seconds: 5))
         .listen((update) {
       if (update.connectionState == DeviceConnectionState.connected) {
