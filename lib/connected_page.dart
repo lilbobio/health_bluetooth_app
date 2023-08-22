@@ -158,10 +158,10 @@ class _ConnectedPageState extends State<ConnectedPage> {
                     Navigator.pop(context, true);
                   });
                 },
-                child: Text(
-                  'Disconnect from ${widget.title}',
+                child: const Text(
+                  'Disconnect',
                   textAlign: TextAlign.center,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontSize: 18.0,
                   ),
                 ),
