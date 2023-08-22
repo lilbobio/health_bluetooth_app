@@ -239,7 +239,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         }
       }
       changeInfoString(
-          '\n\nDevice Paired\nStep on Scale and get weight then\n Press the plus button again to record weight\n\n');
+          '\n\nDevice Paired\nStep on Scale and\nget weight\n Press the plus button\nto record weight\n');
       widget.bluetooth.disconnect();
     });
   }
