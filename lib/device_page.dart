@@ -62,8 +62,7 @@ class _DevicePage extends State<DevicePage> {
       if (isOnAssociated) {
         if (associatedDevices.isEmpty) {
           setState(() {
-            changeInfoString(
-                '\n\n\nNo Associated Devices\n\n\n');
+            changeInfoString('\n\n\nNo Associated Devices\n\n\n');
           });
           return List.empty(growable: true);
         } else {
