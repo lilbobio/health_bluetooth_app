@@ -42,8 +42,11 @@ class _ConnectedPageState extends State<ConnectedPage> {
     super.initState();
     infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
     context.loaderOverlay.show();
-    Future.delayed(const Duration(seconds: 5), () {
+    Future.delayed(const Duration(seconds: 6), () {
       context.loaderOverlay.hide();
+      if (kDebugMode) {
+        print('isConnected: ${widget.bluetooth.isConnected}');
+      }
       if (widget.bluetooth.isConnected &&
           (!widget.device.name.contains('A&D') || widget.isAssociated)) {
         findServices(widget.device, widget.bluetooth, changeInfoString);
