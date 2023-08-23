@@ -53,17 +53,19 @@ h
 ![alt text][AssociatedPageEmpty]
 ![alt text][deviceSelectPage]
 ![alt text][loadingScreen2]
-![alt text][AssociatedPage]
 
 ### Connected to Device Page
 
 ![alt text][connectedPage]
 ![alt text][weightPage]
+![alt text][weightPagePair]
+![alt text][weightPageBeforeWeight]
 
-[loadingScreen2]: assets/images/loadingScreen2.jpg "loading screen between device page and connected page"
-[deviceSelectPage]: assets/images/Device_Page.jpg "device select page"
-[connectedPage]: assets/images/Cconnected_page.jpg "connected page"
-[AssociatedPageEmpty]: assets/images/Assocaited_Page.jpg "Empty Associated Page"
-[AssociatedPage]: assets/images/Associated_Page2.jpg "Associated Page After Connection"
+[loadingScreen2]: assets/images/loadingScreen2.png "loading screen between device page and connected page"
+[deviceSelectPage]: assets/images/Device_Page.png "device select page"
+[connectedPage]: assets/images/Connected_page.png "connected page"
+[AssociatedPageEmpty]: assets/images/Assocaited_Page.png "Empty Associated Page"
 [bluetoothIsDisabled]: assets/images/Bluetooth_is_disabled.jpg "Shows when Device has bluetooth disabled"
-[weightPage]: assets/images/weight_page.jpg "The Connected Page when Connected to AND Scale"
+[weightPage]: assets/images/weight_page3.png "The Connected Page when Connected to AND Scale"
+[weightPagePair]: assets/images/weight_page1.png "The Page to Pair the AND Scale"
+[weightPageBeforeWeight]: assets/images/weight_page2.png "The page right before you stand on scale"
