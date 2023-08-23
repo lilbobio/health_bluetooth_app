@@ -74,7 +74,6 @@ class _DevicePage extends State<DevicePage> {
                 buttonWidgets.add(ButtonRow(
                   device: associatedDevices.elementAt(i),
                   bluetooth: bluetooth,
-                  infoString: changeInfoString,
                   associatedDevices: associatedDevices,
                   isAssociated: isOnAssociated,
                 ));
@@ -100,7 +99,6 @@ class _DevicePage extends State<DevicePage> {
                 buttonWidgets.add(ButtonRow(
                   bluetooth: bluetooth,
                   device: bluetooth.devices.elementAt(i),
-                  infoString: changeInfoString,
                   associatedDevices: associatedDevices,
                   isAssociated: isOnAssociated,
                 ));

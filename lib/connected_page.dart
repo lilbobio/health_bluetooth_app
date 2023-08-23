@@ -258,7 +258,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
       }
       setState(() {
         info('\n\nFinding Services...\n\n\n\n\n');
-        infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
+        //infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
       });
       for (DiscoveredService service in services) {
         String serviceUUIDString = service.serviceId.toString().substring(4, 8);

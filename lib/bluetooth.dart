@@ -99,14 +99,14 @@ class Bluetooth {
     deviceConnection = flutterReactiveBle
         .connectToAdvertisingDevice(
             id: device.id,
-            withServices: [
-              hrmUuid,
-              scaleUuid,
-              dateTimeUuid,
-              bloodPressureUuid,
-              anDScaleUuid,
-            ],
-            //withServices: [],
+            // withServices: [
+            //   hrmUuid,
+            //   scaleUuid,
+            //   dateTimeUuid,
+            //   bloodPressureUuid,
+            //   anDScaleUuid,
+            // ],
+            withServices: [],
             prescanDuration: const Duration(seconds: 5))
         .listen((update) {
       if (update.connectionState == DeviceConnectionState.connected) {
