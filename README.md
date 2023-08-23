@@ -24,15 +24,17 @@ On Mac: <https://docs.flutter.dev/get-started/install/macos>
 ```bash
 flutter analyze
 flutter run lib/main.dart
+h
 ```
 
-### Mac
+### IOS
 
 Install dependencies (cocapods, xcode)
 
 ```bash
 flutter analyze
 flutter run lib/main.dart
+h
 ```
 
 ## Notes
