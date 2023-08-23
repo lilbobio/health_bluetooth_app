@@ -47,7 +47,7 @@ h
 
 ## Screenshots
 
-### Device Select page
+### Device Select Page
 
 ![alt text][bluetoothIsDisabled]
 ![alt text][AssociatedPageEmpty]
