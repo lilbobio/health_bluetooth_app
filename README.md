@@ -54,7 +54,7 @@ h
 ![alt text][deviceSelectPage]
 ![alt text][loadingScreen2]
 
-### Connected to Device Page
+### Connected Page
 
 ![alt text][connectedPage]
 ![alt text][weightPage]
