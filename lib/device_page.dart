@@ -22,6 +22,7 @@ class _DevicePage extends State<DevicePage> {
   bool isOnAssociated = true;
   Bluetooth bluetooth = Bluetooth();
   bool hasBluetoothEnabled = false;
+  String title = 'Association Page';
 
   List<Widget> buttonWidgets = List.empty(growable: true);
 
@@ -34,6 +35,12 @@ class _DevicePage extends State<DevicePage> {
   changeInfoString(String str) {
     setState(() {
       infoString = str;
+    });
+  }
+
+  changeTitleString(String str) {
+    setState(() {
+      title = str;
     });
   }
 
@@ -123,17 +130,21 @@ class _DevicePage extends State<DevicePage> {
     });
 
     return Scaffold(
+      appBar: AppBar(
+        title: Text(title),
+        actions: [
+          //logo
+          Align(
+            alignment: Alignment.center,
+            child: SizedBox(
+              child: Image.asset('assets/images/logo.jpg'),
+            ),
+          ),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            //logo
-            Align(
-              alignment: Alignment.center,
-              child: SizedBox(
-                child: Image.asset('assets/images/logo.jpg'),
-              ),
-            ),
-
             //info text
             Align(
               alignment: Alignment.center,
@@ -234,32 +245,30 @@ class _DevicePage extends State<DevicePage> {
                               changeInfoString(
                                   '\n\n\nClick on the Associated Device\n to Connect to it\n\n');
                             }
+                            changeTitleString('Association Page');
                             changeButtonText('Other Devices');
                           }); //setState
                         } else {
-                          setState(
-                            () {
-                              bluetooth.devices.clear();
-                              buttonWidgets.clear();
-
-                              bluetooth.frbScan();
-                              Future.delayed(const Duration(minutes: 20),
-                                  () async {
-                                setState(() {
-                                  bluetooth.fbrEndScan();
-                                });
-                                buttonWidgets = await createButtonList();
-                              });
-                            },
-                          ); //setState
-
                           setState(() {
+                            bluetooth.devices.clear();
+                            buttonWidgets.clear();
+
+                            bluetooth.frbScan();
+                            Future.delayed(const Duration(minutes: 20),
+                                () async {
+                              setState(() {
+                                bluetooth.fbrEndScan();
+                              });
+                              buttonWidgets = await createButtonList();
+                            });
+
                             if (bluetooth.devices.isNotEmpty) {
                               changeInfoString(
                                   '\n\n\nClick on the Device you want to connect to\n\n');
                             } else {
                               changeInfoString('\n\n\nNo Devices Found\n\n');
                             }
+                            changeTitleString('Other Devices');
                             changeButtonText('Associated Devices');
                           }); //setState
                         } //else
