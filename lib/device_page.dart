@@ -22,7 +22,7 @@ class _DevicePage extends State<DevicePage> {
   bool isOnAssociated = true;
   Bluetooth bluetooth = Bluetooth();
   bool hasBluetoothEnabled = false;
-  String title = 'Association Page';
+  String title = 'Associated Devices';
 
   List<Widget> buttonWidgets = List.empty(growable: true);
 

@@ -30,6 +30,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   String infoText = '';
   late Timer everySecond;
   int isFirstConnect = 0;
+  String title = 'Connected';
 
   changeInfoString(String str) {
     setState(() {
@@ -65,15 +66,20 @@ class _ConnectedPageState extends State<ConnectedPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        actions: [
+          //MIE Logo
+          Align(
+            alignment: Alignment.center,
+            child: Image.asset('assets/images/logo.jpg'),
+          ),
+        ],
+        title: Text(title),
+        automaticallyImplyLeading: false,
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            //MIE Logo
-            Align(
-              alignment: Alignment.center,
-              child: Image.asset('assets/images/logo.jpg'),
-            ),
-
             //Name of device
             Align(
               alignment: Alignment.center,
