@@ -27,7 +27,6 @@ class ConnectedPage extends StatefulWidget {
 
 class _ConnectedPageState extends State<ConnectedPage> {
   String servicesText = '\n\nConnecting to Device...\n\n\n';
-  String infoText = '';
   late Timer everySecond;
   int isFirstConnect = 0;
   String title = 'Connected';
@@ -41,7 +40,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
   @override
   void initState() {
     super.initState();
-    infoText = '\n\n\nConnecting to ${widget.device.name}\n\n';
     context.loaderOverlay.show();
     Future.delayed(const Duration(seconds: 6), () {
       context.loaderOverlay.hide();
@@ -56,7 +54,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
         Navigator.pop(context, true);
       } else {
         setState(() {
-          infoText = 'Press the plus button\nto pair device\n\n';
           changeInfoString('Press the plus button to pair device');
         });
       }
@@ -80,15 +77,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
       body: SafeArea(
         child: Column(
           children: [
-            //Name of device
-            Align(
-              alignment: Alignment.center,
-              child: Text(
-                infoText,
-                textAlign: TextAlign.center,
-                style: const TextStyle(fontSize: 20),
-              ),
-            ),
 
             //find services text
             Align(
@@ -287,7 +275,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
             if (mounted) {
               setState(() {
                 info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n');
-                infoText = '\n\n\nConnected to ${widget.device.name}\n';
               });
             }
           }, onError: (dynamic error) {
@@ -313,7 +300,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
               setState(() {
                 info(
                     'Blood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
-                infoText = '\n\n\nConnected to ${widget.device.name}\n';
               });
             }
           }, onError: (dynamic error) {
@@ -337,7 +323,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
             if (mounted) {
               setState(() {
                 info('Weight is: \n\n ${findWeight(data)}\n\n\n');
-                infoText = '\n\n\nConnected to ${widget.device.name}';
               });
             }
           });
@@ -356,7 +341,6 @@ class _ConnectedPageState extends State<ConnectedPage> {
             if (mounted) {
               setState(() {
                 info('Weight is: \n\n ${findWeightAnd(data)}\n\n\n');
-                infoText = '\n\n\nConnected to ${widget.device.name}';
               });
             }
           });
