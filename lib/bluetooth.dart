@@ -154,6 +154,9 @@ class Bluetooth {
 
   disconnect() async {
     await deviceConnection?.cancel();
+    if (kDebugMode) {
+      print('device disconnected');
+    }
     deviceConnection = null;
     isConnected = false;
   }

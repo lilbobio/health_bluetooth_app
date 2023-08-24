@@ -31,6 +31,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   int isFirstConnect = 0;
   String title = 'Connected';
   String infoText = '';
+  bool showPlusButton = false;
 
   changeInfoString(String str) {
     setState(() {
@@ -42,22 +43,26 @@ class _ConnectedPageState extends State<ConnectedPage> {
   void initState() {
     super.initState();
     infoText = '\n${widget.device.name}';
-    context.loaderOverlay.show();
-    Future.delayed(const Duration(seconds: 6), () {
-      context.loaderOverlay.hide();
+    if (kDebugMode) {
+      print('isConnected: ${widget.bluetooth.isConnected}');
+    }
+
+    widget.bluetooth.deviceConnection?.onData((data) {
       if (kDebugMode) {
-        print('isConnected: ${widget.bluetooth.isConnected}');
+        print('data: $data\ndata[0]');
       }
-      if (widget.bluetooth.isConnected &&
-          (!widget.device.name.contains('A&D') || widget.isAssociated)) {
-        findServices(widget.device, widget.bluetooth, changeInfoString);
-      } else if (!widget.bluetooth.isConnected) {
-        widget.bluetooth.disconnect();
-        Navigator.pop(context, true);
-      } else {
+
+      if (data.toString().contains('DeviceConnectionState.connected')) {
         setState(() {
-          changeInfoString('\n\n\nPress the plus button to pair device\n\n');
+          showPlusButton = true;
         });
+        if (!widget.device.name.contains('A&D') || widget.isAssociated) {
+          findServices(widget.device, widget.bluetooth, changeInfoString);
+        } else {
+          setState(() {
+            changeInfoString('\n\n\nPress the plus button to pair device\n\n');
+          });
+        }
       }
     });
   }
@@ -103,7 +108,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
             //get scale weight button
             if (widget.device.name.contains('A&D') &&
                 (isFirstConnect == 0 || isFirstConnect == 1) &&
-                !widget.isAssociated)
+                !widget.isAssociated &&
+                showPlusButton)
               Align(
                 alignment: Alignment.bottomCenter,
                 child: FloatingActionButton(
