@@ -30,6 +30,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   late Timer everySecond;
   int isFirstConnect = 0;
   String title = 'Connected';
+  String infoText = '';
 
   changeInfoString(String str) {
     setState(() {
@@ -40,6 +41,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
   @override
   void initState() {
     super.initState();
+    infoText = '\n${widget.device.name}';
     context.loaderOverlay.show();
     Future.delayed(const Duration(seconds: 6), () {
       context.loaderOverlay.hide();
@@ -54,7 +56,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
         Navigator.pop(context, true);
       } else {
         setState(() {
-          changeInfoString('Press the plus button to pair device');
+          changeInfoString('\n\n\nPress the plus button to pair device\n\n');
         });
       }
     });
@@ -77,6 +79,15 @@ class _ConnectedPageState extends State<ConnectedPage> {
       body: SafeArea(
         child: Column(
           children: [
+            //Name of device
+            Align(
+              alignment: Alignment.center,
+              child: Text(
+                infoText,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 20),
+              ),
+            ),
 
             //find services text
             Align(
@@ -274,7 +285,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Heart Rate is: \n\n ${findHeartRate(data)}\n\n\n');
+                info('\n\n\nHeart Rate is: \n\n ${findHeartRate(data)}\n\n\n');
               });
             }
           }, onError: (dynamic error) {
@@ -299,7 +310,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             if (mounted) {
               setState(() {
                 info(
-                    'Blood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
+                    '\n\n\nBlood Pressure is: \n\n ${findBloodPressure(data)}\n\n\n');
               });
             }
           }, onError: (dynamic error) {
@@ -322,7 +333,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Weight is: \n\n ${findWeight(data)}\n\n\n');
+                info('\n\n\nWeight is: \n\n ${findWeight(data)}\n\n');
               });
             }
           });
@@ -340,7 +351,7 @@ class _ConnectedPageState extends State<ConnectedPage> {
             }
             if (mounted) {
               setState(() {
-                info('Weight is: \n\n ${findWeightAnd(data)}\n\n\n');
+                info('\n\n\nWeight is: \n\n ${findWeightAnd(data)}\n\n\n');
               });
             }
           });
