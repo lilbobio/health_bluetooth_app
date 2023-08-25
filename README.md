@@ -52,7 +52,6 @@ h
 ![alt text][bluetoothIsDisabled]
 ![alt text][AssociatedPageEmpty]
 ![alt text][deviceSelectPage]
-![alt text][loadingScreen2]
 
 ### Connected Page
 
@@ -61,11 +60,10 @@ h
 ![alt text][weightPagePair]
 ![alt text][weightPageBeforeWeight]
 
-[loadingScreen2]: assets/images/loadingScreen2.png "loading screen between device page and connected page"
-[deviceSelectPage]: assets/images/Device_Page.png "device select page"
-[connectedPage]: assets/images/Connected_page.png "connected page"
-[AssociatedPageEmpty]: assets/images/Assocaited_Page.png "Empty Associated Page"
+[deviceSelectPage]: assets/images/flutter_02.png "device select page"
+[connectedPage]: assets/images/flutter_07.png "connected page"
+[AssociatedPageEmpty]: assets/images/flutter_08.png "Empty Associated Page"
 [bluetoothIsDisabled]: assets/images/Bluetooth_is_disabled.jpg "Shows when Device has bluetooth disabled"
-[weightPage]: assets/images/weight_page3.png "The Connected Page when Connected to AND Scale"
-[weightPagePair]: assets/images/weight_page1.png "The Page to Pair the AND Scale"
-[weightPageBeforeWeight]: assets/images/weight_page2.png "The page right before you stand on scale"
+[weightPage]: assets/images/flutter_05.png "The Connected Page when Connected to AND Scale"
+[weightPagePair]: assets/images/flutter_03(1).png "The Page to Pair the AND Scale"
+[weightPageBeforeWeight]: assets/images/flutter_04.png "The page right before you stand on scale"
