@@ -63,6 +63,11 @@ class _ConnectedPageState extends State<ConnectedPage> {
           });
         }
       }
+
+      if(data.toString().contains('DeviceConnectionState.disconnected')) {
+        widget.bluetooth.disconnect();
+        Navigator.pop(context);
+      }
     });
   }
 
@@ -342,7 +347,8 @@ class _ConnectedPageState extends State<ConnectedPage> {
               });
             }
           });
-        } else if (serviceUUIDString.compareTo('4100') == 0) {
+        } else if (serviceUUIDString.compareTo(bluetooth.andScaleUuidString) ==
+            0) {
           final characteristic = QualifiedCharacteristic(
               characteristicId: service.characteristicIds.first,
               serviceId: service.serviceId,
@@ -358,6 +364,20 @@ class _ConnectedPageState extends State<ConnectedPage> {
               setState(() {
                 info('\n\n\nWeight is: \n\n ${findWeightAnd(data)}\n\n\n');
               });
+            }
+          });
+        } else if (serviceUUIDString.compareTo(bluetooth.microLifeUuidString) ==
+            0) {
+          final characteristic = QualifiedCharacteristic(
+              characteristicId: service.characteristicIds.last,
+              serviceId: service.serviceId,
+              deviceId: device.id);
+
+          bluetooth.flutterReactiveBle
+              .subscribeToCharacteristic(characteristic)
+              .listen((data) {
+            if (kDebugMode) {
+              print(data);
             }
           });
         } else {

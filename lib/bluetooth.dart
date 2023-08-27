@@ -12,11 +12,14 @@ class Bluetooth {
   final String scaleUUIDString = '181d';
   final String bloodPressureUUIDString = '1810';
   final String dateTimeUUIDString = '2A08';
+  final String microLifeUuidString = 'fff0';
+  final String andScaleUuidString = '4100';
   final Uuid hrmUuid = Uuid.parse('180D');
   final Uuid scaleUuid = Uuid.parse('181D');
   final Uuid bloodPressureUuid = Uuid.parse('1810');
   final Uuid dateTimeUuid = Uuid.parse('2A08');
   final Uuid anDScaleUuid = Uuid.parse('23434100-1fe4-1eff-80cb-00ff78297d8b');
+  final Uuid microLifeUuid = Uuid.parse('fff0');
   bool isConnected = false;
   // ignore: avoid_init_to_null
   bool? isConnectable = null;
@@ -58,8 +61,9 @@ class Bluetooth {
           bloodPressureUuid,
           dateTimeUuid,
           anDScaleUuid,
+          microLifeUuid,
         ],
-        // withServices: [],
+        //withServices: [],
         scanMode: ScanMode.balanced,
       ).listen((device) {
         if (device.name.isNotEmpty) {
