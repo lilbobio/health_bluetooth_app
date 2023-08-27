@@ -68,6 +68,11 @@ class _ConnectedPageState extends State<ConnectedPage> {
         widget.bluetooth.disconnect();
         Navigator.pop(context);
       }
+
+      if(!widget.bluetooth.isConnected){
+        widget.bluetooth.disconnect();
+        Navigator.pop(context);
+      }
     });
   }
 
